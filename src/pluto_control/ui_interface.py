@@ -13,6 +13,7 @@ from PyQt5 import QtCore, QtWidgets
 
 from . import pluto_control_ui
 from . import proginit as pi
+from . import device_manager
 
 class Window(QtWidgets.QMainWindow, pluto_control_ui.Ui_MainWindow):
     """
@@ -28,8 +29,23 @@ class Window(QtWidgets.QMainWindow, pluto_control_ui.Ui_MainWindow):
         """
         super().__init__(parent)
         self.setupUi(self)
-
         pi.logger.debug("Setup UI")
+        self.populate_devices()
+
+
+    def populate_devices(self):
+        """Populate the combo box with available USB devices."""
+        self.comboBox_ports.addItem("USB Ports")  # Add hint as the first item
+        self.comboBox_ports.model().item(0).setEnabled(False)  # Disable the 'USB Ports' item
+        devices = device_manager.list_usb_devices()
+        for device in devices:
+            pi.logger.debug("Found USB device: " + f"{device.device}")
+            self.comboBox_ports.addItem(f"{device.device} - {device.description}")
+        if len(devices) == 0:
+            self.comboBox_ports.addItem("No devices found")
+            self.comboBox_ports.model().item(1).setEnabled(False)  # Disable if no devices found
+        else:
+            self.comboBox_ports.setCurrentIndex(1)  # Automatically select the first actual device
 
 def create_window():
     """
