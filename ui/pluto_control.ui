@@ -15,6 +15,9 @@
   </property>
   <widget class="QWidget" name="centralwidget">
    <widget class="QTabWidget" name="tabWidget">
+    <property name="enabled">
+     <bool>true</bool>
+    </property>
     <property name="geometry">
      <rect>
       <x>10</x>
@@ -76,6 +79,9 @@
        </property>
       </widget>
       <widget class="QPushButton" name="pB_connect">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
        <property name="geometry">
         <rect>
          <x>120</x>
@@ -86,6 +92,9 @@
        </property>
        <property name="text">
         <string>Connect</string>
+       </property>
+       <property name="checkable">
+        <bool>true</bool>
        </property>
       </widget>
       <widget class="QLabel" name="connectionState">
@@ -269,7 +278,7 @@ p, li { white-space: pre-wrap; }
        </property>
       </widget>
      </widget>
-     <widget class="QTextBrowser" name="textBrowser">
+     <widget class="QTextBrowser" name="tB_Logging">
       <property name="geometry">
        <rect>
         <x>10</x>
