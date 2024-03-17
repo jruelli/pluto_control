@@ -19,6 +19,14 @@ from . import pluto_control_ui
 from . import proginit as pi
 from . import device_manager
 
+
+def extract_version_number(version_string):
+    # This function assumes the version string format "App Version: x.y.z-unstable"
+    # Adjust the slicing as needed if the format changes
+    match = re.search(r'\d+\.\d+\.\d+', version_string)
+    return match.group(0) if match else "Unknown version"
+
+
 class Window(QtWidgets.QMainWindow, pluto_control_ui.Ui_MainWindow):
     """
     Class representing the main window of the pluto_control application.
@@ -32,11 +40,12 @@ class Window(QtWidgets.QMainWindow, pluto_control_ui.Ui_MainWindow):
              parent (QObject *): The parent widget of the main window. Defaults to None.
         """
         super().__init__(parent)
+        self.serial_connection = None
         self.setupUi(self)
         pi.logger.debug("Setup UI")
         self.pB_connect.clicked.connect(self.connect_and_fetch_version)
+        self.pB_disconnect.clicked.connect(self.disconnect_serial_connection)
         self.populate_devices()
-
 
     def populate_devices(self):
         """Populate the combo box with available USB devices."""
@@ -53,12 +62,35 @@ class Window(QtWidgets.QMainWindow, pluto_control_ui.Ui_MainWindow):
             self.comboBox_ports.setCurrentIndex(1)  # Automatically select the first actual device
             self.pB_connect.setEnabled(True)
 
+    def disconnect_serial_connection(self):
+        if self.serial_connection and self.serial_connection.is_open:
+            try:
+                # Flush output & input buffer
+                self.serial_connection.flushOutput()
+                self.serial_connection.flushInput()
+                # Close the serial connection
+                self.serial_connection.close()
+                pi.logger.debug("Serial connection closed")
+            except (serial.SerialException, ValueError) as e:
+                # Handle exceptions that could be raised by the above operations
+                pi.logger.error(f"Error closing serial connection: {e}")
+            finally:
+                # Ensure that the serial_connection attribute is cleared
+                self.serial_connection = None
+        # Refresh the list of devices and update the UI accordingly
+        self.populate_devices()
+        self.pB_connect.setEnabled(True)
+        self.pB_disconnect.setEnabled(False)
+        self.textEdit_version.setText("")
+
     def connect_and_fetch_version(self):
         """Connect to the selected device and fetch its version."""
         selected_device = self.comboBox_ports.currentText().split(" - ")[0]
         if selected_device != "USB Ports":
             try:
                 self.serial_connection = serial.Serial(selected_device, 115200, timeout=1)
+                self.pB_connect.setEnabled(False)
+                self.pB_disconnect.setEnabled(True)
                 time.sleep(2)  # Wait for the device to initialize
 
                 # Turn off echo and prompt (if needed)
@@ -79,12 +111,12 @@ class Window(QtWidgets.QMainWindow, pluto_control_ui.Ui_MainWindow):
                 time.sleep(0.5)  # Allow time for the device to respond
                 response = self.read_response()
                 print(response)
-                version_number = self.extract_version_number(response)
-
                 # Update the GUI with the version info
-                self.textEdit_version.setText(version_number)
+                self.textEdit_version.setText(response)
 
             except serial.SerialException as e:
+                self.pB_connect.setEnabled(False)
+                self.pB_disconnect.setEnabled(False)
                 pi.logger.error(f"Serial connection error: {e}")
                 self.textEdit_version.setText(f"Failed to connect: {e}")
         else:
@@ -96,12 +128,6 @@ class Window(QtWidgets.QMainWindow, pluto_control_ui.Ui_MainWindow):
         # Remove ANSI escape sequences from response
         response = self.remove_ansi_escape_sequences(response)
         return response.strip()
-
-    def extract_version_number(self, version_string):
-        # This function assumes the version string format "App Version: x.y.z-unstable"
-        # Adjust the slicing as needed if the format changes
-        match = re.search(r'\d+\.\d+\.\d+', version_string)
-        return match.group(0) if match else "Unknown version"
 
     @staticmethod
     def remove_ansi_escape_sequences(text):
