@@ -43,24 +43,24 @@ class Window(QtWidgets.QMainWindow, pluto_control_ui.Ui_MainWindow):
         self.serial_connection = None
         self.setupUi(self)
         pi.logger.debug("Setup UI")
-        self.pB_connect.clicked.connect(self.connect_and_fetch_version)
-        self.pB_disconnect.clicked.connect(self.disconnect_serial_connection)
+        self.pB_Connect.clicked.connect(self.connect_and_fetch_version)
+        self.pB_Disconnect.clicked.connect(self.disconnect_serial_connection)
         self.populate_devices()
 
     def populate_devices(self):
         """Populate the combo box with available USB devices."""
-        self.comboBox_ports.addItem("USB Ports")  # Add hint as the first item
-        self.comboBox_ports.model().item(0).setEnabled(False)  # Disable the 'USB Ports' item
+        self.cB_PortNumber.addItem("USB Ports")  # Add hint as the first item
+        self.cB_PortNumber.model().item(0).setEnabled(False)  # Disable the 'USB Ports' item
         devices = device_manager.list_usb_devices()
         for device in devices:
             pi.logger.debug("Found USB device: " + f"{device.device}")
-            self.comboBox_ports.addItem(f"{device.device} - {device.description}")
+            self.cB_PortNumber.addItem(f"{device.device} - {device.description}")
         if len(devices) == 0:
-            self.comboBox_ports.addItem("No devices found")
-            self.comboBox_ports.model().item(1).setEnabled(False)  # Disable if no devices found
+            self.cB_PortNumber.addItem("No devices found")
+            self.cB_PortNumber.model().item(1).setEnabled(False)  # Disable if no devices found
         else:
-            self.comboBox_ports.setCurrentIndex(1)  # Automatically select the first actual device
-            self.pB_connect.setEnabled(True)
+            self.cB_PortNumber.setCurrentIndex(1)  # Automatically select the first actual device
+            self.pB_Connect.setEnabled(True)
 
     def disconnect_serial_connection(self):
         if self.serial_connection and self.serial_connection.is_open:
@@ -79,28 +79,25 @@ class Window(QtWidgets.QMainWindow, pluto_control_ui.Ui_MainWindow):
                 self.serial_connection = None
         # Refresh the list of devices and update the UI accordingly
         self.populate_devices()
-        self.pB_connect.setEnabled(True)
-        self.pB_disconnect.setEnabled(False)
-        self.textEdit_version.setText("")
+        self.pB_Connect.setEnabled(True)
+        self.pB_Disconnect.setEnabled(False)
+        self.tE_pluto_pico_version.setText("")
 
     def connect_and_fetch_version(self):
         """Connect to the selected device and fetch its version."""
-        selected_device = self.comboBox_ports.currentText().split(" - ")[0]
+        selected_device = self.cB_PortNumber.currentText().split(" - ")[0]
         if selected_device != "USB Ports":
             try:
                 self.serial_connection = serial.Serial(selected_device, 115200, timeout=1)
-                self.pB_connect.setEnabled(False)
-                self.pB_disconnect.setEnabled(True)
+                self.pB_Connect.setEnabled(False)
+                self.pB_Disconnect.setEnabled(True)
                 time.sleep(2)  # Wait for the device to initialize
-
                 # Turn off echo and prompt (if needed)
                 self.serial_connection.write(b"shell echo off\n")
                 self.serial_connection.flush()
                 time.sleep(0.5)  # Short delay to let the command process
-
                 # Clear any initial data from the buffer
                 self.serial_connection.reset_input_buffer()
-
                 # Send the 'version' command
                 self.serial_connection.write(b"version\n")
                 # Read the response
@@ -112,7 +109,7 @@ class Window(QtWidgets.QMainWindow, pluto_control_ui.Ui_MainWindow):
                 response = self.read_response()
                 print(response)
                 # Update the GUI with the version info
-                self.textEdit_version.setText(response)
+                self.tE_pluto_pico_version.setText(response)
 
             except serial.SerialException as e:
                 self.pB_connect.setEnabled(False)
