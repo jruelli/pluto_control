@@ -81,10 +81,9 @@ class Window(QtWidgets.QMainWindow, pluto_control_ui.Ui_MainWindow):
                 # Ensure that the serial_connection attribute is cleared
                 self.serial_connection = None
         # Refresh the list of devices and update the UI accordingly
-        self.populate_devices()
         self.pB_Connect.setEnabled(True)
         self.pB_Disconnect.setEnabled(False)
-        self.tE_pluto_pico_version.setText("")
+        self.tE_pluto_pico_version.setText("Disconnected")
 
     def connect_and_fetch_version(self):
         """Connect to the selected device and fetch its version."""
@@ -92,36 +91,43 @@ class Window(QtWidgets.QMainWindow, pluto_control_ui.Ui_MainWindow):
         if selected_device != "USB Ports":
             try:
                 self.serial_connection = serial.Serial(selected_device, 115200, timeout=1)
-                # ToDo: React if connection is not possible
+                # Disable the connect button and enable the disconnect button
                 self.pB_Connect.setEnabled(False)
                 self.pB_Disconnect.setEnabled(True)
-                time.sleep(2)  # Wait for the device to initialize
+                # Wait for the device to initialize
+                time.sleep(1)
                 # Turn off echo and prompt (if needed)
                 self.serial_connection.write(b"shell echo off\n")
-                self.serial_connection.flush()
-                time.sleep(0.5)  # Short delay to let the command process
+                self.serial_connection.write(b"shell prompt off\n")
+                # Read and discard echoed command
+                self.flush_echoed_command()
                 # Clear any initial data from the buffer
                 self.serial_connection.reset_input_buffer()
                 # Send the 'version' command
                 self.serial_connection.write(b"version\n")
                 # Read the response
-                time.sleep(0.5)  # Allow time for the device to respond
                 response = self.read_response()
-                print(response)
-                # Read the response
-                time.sleep(0.5)  # Allow time for the device to respond
-                response = self.read_response()
-                print(response)
                 # Update the GUI with the version info
                 self.tE_pluto_pico_version.setText(response)
-
             except serial.SerialException as e:
-                self.pB_connect.setEnabled(False)
-                self.pB_disconnect.setEnabled(False)
+                self.pB_Connect.setEnabled(True)
+                self.pB_Disconnect.setEnabled(False)
                 pi.logger.error(f"Serial connection error: {e}")
-                self.textEdit_version.setText(f"Failed to connect: {e}")
+                self.tE_pluto_pico_version.setText(f"Failed to connect: {e}")
         else:
-            self.textEdit_version.setText("Select a valid USB port.")
+            self.tE_pluto_pico_version.setText("Select a valid USB port.")
+
+    def flush_echoed_command(self):
+        """Flush the echoed command from the serial buffer."""
+        try:
+            while True:
+                line = self.serial_connection.readline()
+                if not line:
+                    break
+                # Optionally, log the discarded echoed command
+                pi.logger.debug(f"Discarded echoed command: {line.decode('utf-8').strip()}")
+        except serial.SerialTimeoutException as e:
+            pi.logger.error(f"Timeout while flushing echoed command: {e}")
 
     def save_config(self):
         pi.logger.debug("Saving Configuration")
