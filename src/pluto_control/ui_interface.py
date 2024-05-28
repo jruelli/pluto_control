@@ -15,7 +15,7 @@ import re
 
 from PyQt5 import QtCore, QtWidgets
 
-from . import pluto_control_ui
+from . import pluto_control_ui, __about__
 from . import proginit as pi
 from . import device_manager
 
@@ -43,6 +43,7 @@ class Window(QtWidgets.QMainWindow, pluto_control_ui.Ui_MainWindow):
         self.serial_connection = None
         self.setupUi(self)
         pi.logger.debug("Setup UI")
+        self.tE_pluto_control_version.setText("pluto-control version: " + __about__.__version__)
         self.pB_Connect.clicked.connect(self.connect_and_fetch_version)
         self.pB_Disconnect.clicked.connect(self.disconnect_serial_connection)
         self.populate_devices()
