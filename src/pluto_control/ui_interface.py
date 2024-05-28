@@ -51,19 +51,34 @@ class Window(QtWidgets.QMainWindow, pluto_control_ui.Ui_MainWindow):
 
     def populate_devices(self):
         """Populate the combo box with available USB devices."""
+        self.cB_PortNumber.clear()  # Clear existing items
         self.cB_PortNumber.addItem("USB Ports")  # Add hint as the first item
         self.cB_PortNumber.model().item(0).setEnabled(False)  # Disable the 'USB Ports' item
+
         devices = device_manager.list_usb_devices()
+        saved_port = pi.conf.get('DEFAULT', 'pluto_pico_port', fallback="")  # Get the saved port from the config
+
+        found_saved_port = False
         for device in devices:
             pi.logger.debug("Found USB device: " + f"{device.device}")
             self.cB_PortNumber.addItem(f"{device.device} - {device.description}")
+            if device.device == saved_port:
+                found_saved_port = True
+
         if len(devices) == 0:
             self.cB_PortNumber.addItem("No devices found")
             self.cB_PortNumber.model().item(1).setEnabled(False)  # Disable if no devices found
         else:
-            self.cB_PortNumber.setCurrentIndex(1)  # Automatically select the first actual device
-            # ToDo: Set device from configuration
-            self.pB_Connect.setEnabled(True)
+            if found_saved_port:
+                for index in range(1, self.cB_PortNumber.count()):
+                    if self.cB_PortNumber.itemText(index).startswith(saved_port):
+                        self.cB_PortNumber.setCurrentIndex(index)
+                        break
+            else:
+                pi.logger.error("pluto_pico_port is not available")
+                self.cB_PortNumber.setCurrentIndex(1)  # Automatically select the first actual device
+
+        self.pB_Connect.setEnabled(len(devices) > 0)  # Enable connect button only if devices are found
 
     def disconnect_serial_connection(self):
         if self.serial_connection and self.serial_connection.is_open:
