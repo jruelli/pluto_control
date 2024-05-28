@@ -56,7 +56,7 @@ class Window(QtWidgets.QMainWindow, pluto_control_ui.Ui_MainWindow):
         self.cB_PortNumber.model().item(0).setEnabled(False)  # Disable the 'USB Ports' item
 
         devices = device_manager.list_usb_devices()
-        saved_port = pi.conf.get("DEFAULT", "pluto_pico_port", fallback="")  # Get the saved port from the config
+        saved_port = pi.conf.get("DEFAULT", "pluto_pico_port", fallback="")
 
         found_saved_port = False
         for device in devices:
@@ -109,10 +109,8 @@ class Window(QtWidgets.QMainWindow, pluto_control_ui.Ui_MainWindow):
 
     def save_config(self):
         pi.logger.debug("Saving Configuration")
-        self.pB_SaveConfig.setEnabled(False)
-        pi.reload_conf()
-        text = pi.conf.get("DEFAULT", "default_port")
-        print(text)
+        pi.conf.set("DEFAULT", "pluto_pico_port", self.cB_PortNumber.currentText().split(" - ")[0])
+        pi.save_conf()
 
     def log_pico_communication(self, message, direction):
         """Add a message to the terminal text edit and log it with direction."""

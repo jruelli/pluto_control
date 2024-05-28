@@ -169,3 +169,4 @@ cython_debug/
 # Ignore generated Windows binary
 /dist/*.exe
 
+/src/pluto_control/pluto_control.conf.bak

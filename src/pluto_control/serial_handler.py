@@ -3,6 +3,7 @@ import serial.tools.list_ports
 import re
 import proginit as pi
 
+
 class SerialHandler:
     def __init__(self, log_callback):
         """
