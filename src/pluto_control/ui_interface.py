@@ -46,6 +46,7 @@ class Window(QtWidgets.QMainWindow, pluto_control_ui.Ui_MainWindow):
         self.tE_pluto_control_version.setText("pluto-control version: " + __about__.__version__)
         self.pB_Connect.clicked.connect(self.connect_and_fetch_version)
         self.pB_Disconnect.clicked.connect(self.disconnect_serial_connection)
+        self.pB_SaveConfig.clicked.connect(self.save_config)
         self.populate_devices()
 
     def populate_devices(self):
@@ -61,6 +62,7 @@ class Window(QtWidgets.QMainWindow, pluto_control_ui.Ui_MainWindow):
             self.cB_PortNumber.model().item(1).setEnabled(False)  # Disable if no devices found
         else:
             self.cB_PortNumber.setCurrentIndex(1)  # Automatically select the first actual device
+            # ToDo: Set device from configuration
             self.pB_Connect.setEnabled(True)
 
     def disconnect_serial_connection(self):
@@ -90,6 +92,7 @@ class Window(QtWidgets.QMainWindow, pluto_control_ui.Ui_MainWindow):
         if selected_device != "USB Ports":
             try:
                 self.serial_connection = serial.Serial(selected_device, 115200, timeout=1)
+                # ToDo: React if connection is not possible
                 self.pB_Connect.setEnabled(False)
                 self.pB_Disconnect.setEnabled(True)
                 time.sleep(2)  # Wait for the device to initialize
@@ -119,6 +122,13 @@ class Window(QtWidgets.QMainWindow, pluto_control_ui.Ui_MainWindow):
                 self.textEdit_version.setText(f"Failed to connect: {e}")
         else:
             self.textEdit_version.setText("Select a valid USB port.")
+
+    def save_config(self):
+        pi.logger.debug("Saving Configuration")
+        self.pB_SaveConfig.setEnabled(False)
+        pi.reload_conf()
+        text = pi.conf.get('DEFAULT', 'default_port')
+        print(text)
 
     def read_response(self):
         """Read the response from the device."""

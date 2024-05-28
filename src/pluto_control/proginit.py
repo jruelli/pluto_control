@@ -135,4 +135,4 @@ if "conffile" in pargs and dirname(pargs.conffile) == "":
 
 
 # Load configuration - Comment out, if you do that in your own program
-# reload_conf()
+reload_conf()

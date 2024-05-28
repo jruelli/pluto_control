@@ -1131,7 +1131,7 @@ p, li { white-space: pre-wrap; }
       <property name="geometry">
        <rect>
         <x>900</x>
-        <y>0</y>
+        <y>10</y>
         <width>291</width>
         <height>31</height>
        </rect>
@@ -1147,33 +1147,14 @@ p, li { white-space: pre-wrap; }
        <string/>
       </property>
      </widget>
-     <widget class="QPushButton" name="pB_Connect_2">
-      <property name="enabled">
-       <bool>true</bool>
-      </property>
-      <property name="geometry">
-       <rect>
-        <x>1050</x>
-        <y>40</y>
-        <width>141</width>
-        <height>28</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>Load Config</string>
-      </property>
-      <property name="checkable">
-       <bool>true</bool>
-      </property>
-     </widget>
-     <widget class="QPushButton" name="pB_Connect_3">
+     <widget class="QPushButton" name="pB_SaveConfig">
       <property name="enabled">
        <bool>true</bool>
       </property>
       <property name="geometry">
        <rect>
         <x>900</x>
-        <y>40</y>
+        <y>50</y>
         <width>131</width>
         <height>28</height>
        </rect>
