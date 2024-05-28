@@ -9,8 +9,6 @@ __license__ = "MIT"
 import os
 import sys
 import time
-import serial
-import serial.tools.list_ports
 import re
 
 from PyQt5 import QtCore, QtWidgets
@@ -18,6 +16,7 @@ from PyQt5 import QtCore, QtWidgets
 from . import pluto_control_ui, __about__
 from . import proginit as pi
 from . import device_manager
+from .serial_handler import SerialHandler
 
 
 def extract_version_number(version_string):
@@ -42,6 +41,7 @@ class Window(QtWidgets.QMainWindow, pluto_control_ui.Ui_MainWindow):
         super().__init__(parent)
         self.serial_connection = None
         self.setupUi(self)
+        self.serial_handler = SerialHandler(self.log_pico_communication)
         pi.logger.debug("Setup UI")
         self.tE_pluto_control_version.setText("pluto-control version: " + __about__.__version__)
         self.pB_Connect.clicked.connect(self.connect_and_fetch_version)
@@ -81,21 +81,7 @@ class Window(QtWidgets.QMainWindow, pluto_control_ui.Ui_MainWindow):
         self.pB_Connect.setEnabled(len(devices) > 0)  # Enable connect button only if devices are found
 
     def disconnect_serial_connection(self):
-        if self.serial_connection and self.serial_connection.is_open:
-            try:
-                # Flush output & input buffer
-                self.serial_connection.flushOutput()
-                self.serial_connection.flushInput()
-                # Close the serial connection
-                self.serial_connection.close()
-                pi.logger.debug("Serial connection closed")
-            except (serial.SerialException, ValueError) as e:
-                # Handle exceptions that could be raised by the above operations
-                pi.logger.error(f"Error closing serial connection: {e}")
-            finally:
-                # Ensure that the serial_connection attribute is cleared
-                self.serial_connection = None
-        # Refresh the list of devices and update the UI accordingly
+        self.serial_handler.disconnect()
         self.pB_Connect.setEnabled(True)
         self.pB_Disconnect.setEnabled(False)
         self.tE_pluto_pico_version.setText("Disconnected")
@@ -104,46 +90,22 @@ class Window(QtWidgets.QMainWindow, pluto_control_ui.Ui_MainWindow):
         """Connect to the selected device and fetch its version."""
         selected_device = self.cB_PortNumber.currentText().split(" - ")[0]
         if selected_device != "USB Ports":
-            try:
-                self.serial_connection = serial.Serial(selected_device, 115200, timeout=1)
-                # Disable the connect button and enable the disconnect button
+            if self.serial_handler.connect(selected_device):
                 self.pB_Connect.setEnabled(False)
                 self.pB_Disconnect.setEnabled(True)
-                pi.logger.debug(f"Connected to {selected_device}")
-                # Wait for the device to initialize
                 time.sleep(1)
-                # Turn off echo and prompt (if needed)
-                self.serial_connection.write(b"shell echo off\n")
-                self.serial_connection.write(b"shell prompt off\n")
-                # Read and discard echoed command
-                self.flush_echoed_command()
-                # Clear any initial data from the buffer
-                self.serial_connection.reset_input_buffer()
-                # Send the 'version' command
-                self.write_to_serial(b"version\n")
-                # Read the response
-                response = self.read_response()
-                # Update the GUI with the version info
+                self.serial_handler.write(b"shell echo off\n")
+                self.serial_handler.write(b"shell prompt off\n")
+                self.serial_handler.flush_echoed_command()
+                self.serial_handler.write(b"version\n")
+                response = self.serial_handler.read()
                 self.tE_pluto_pico_version.setText(response)
-            except serial.SerialException as e:
+            else:
                 self.pB_Connect.setEnabled(True)
                 self.pB_Disconnect.setEnabled(False)
-                pi.logger.error(f"Serial connection error: {e}")
-                self.tE_pluto_pico_version.setText(f"Failed to connect: {e}")
+                self.tE_pluto_pico_version.setText("Failed to connect.")
         else:
             self.tE_pluto_pico_version.setText("Select a valid USB port.")
-
-    def flush_echoed_command(self):
-        """Flush the echoed command from the serial buffer."""
-        try:
-            while True:
-                line = self.serial_connection.readline()
-                if not line:
-                    break
-                # Optionally, log the discarded echoed command
-                pi.logger.debug(f"Discarded echoed command: {line.decode('utf-8').strip()}")
-        except serial.SerialTimeoutException as e:
-            pi.logger.error(f"Timeout while flushing echoed command: {e}")
 
     def save_config(self):
         pi.logger.debug("Saving Configuration")
@@ -151,25 +113,6 @@ class Window(QtWidgets.QMainWindow, pluto_control_ui.Ui_MainWindow):
         pi.reload_conf()
         text = pi.conf.get("DEFAULT", "default_port")
         print(text)
-
-    def read_response(self):
-        """Read the response from the device."""
-        response = self.serial_connection.read_until(b"\n").decode("utf-8", "ignore").strip()
-        # Remove ANSI escape sequences from response
-        response = self.remove_ansi_escape_sequences(response)
-        self.log_pico_communication(response, "receive")
-        return response.strip()
-
-    @staticmethod
-    def remove_ansi_escape_sequences(text):
-        # ANSI escape code regex pattern
-        ansi_escape_pattern = re.compile(r"(?:\x1B[@-_]|[\x80-\x9F])[0-?]*[ -/]*[@-~]")
-        return ansi_escape_pattern.sub("", text)
-
-    def write_to_serial(self, message):
-        """Write a message to the serial connection and log it."""
-        self.serial_connection.write(message)
-        self.log_pico_communication(message.decode("utf-8").strip(), "send")
 
     def log_pico_communication(self, message, direction):
         """Add a message to the terminal text edit and log it with direction."""
