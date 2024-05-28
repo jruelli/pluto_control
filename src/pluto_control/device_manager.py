@@ -23,8 +23,8 @@ def connect_to_device(port, baud_rate=9600):
 def send_command(ser, command):
     """Send a command to the connected device."""
     if ser is not None and ser.isOpen():
-        ser.write((command + '\n').encode('utf-8'))  # Ensure command is properly encoded
-        response = ser.readline().decode('utf-8').strip()  # Read and decode response
+        ser.write((command + "\n").encode("utf-8"))  # Ensure command is properly encoded
+        response = ser.readline().decode("utf-8").strip()  # Read and decode response
         return response
     else:
         return "Not connected."

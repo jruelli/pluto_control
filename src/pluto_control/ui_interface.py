@@ -15,7 +15,7 @@ import re
 
 from PyQt5 import QtCore, QtWidgets
 
-from . import pluto_control_ui
+from . import pluto_control_ui, __about__
 from . import proginit as pi
 from . import device_manager
 
@@ -23,7 +23,7 @@ from . import device_manager
 def extract_version_number(version_string):
     # This function assumes the version string format "App Version: x.y.z-unstable"
     # Adjust the slicing as needed if the format changes
-    match = re.search(r'\d+\.\d+\.\d+', version_string)
+    match = re.search(r"\d+\.\d+\.\d+", version_string)
     return match.group(0) if match else "Unknown version"
 
 
@@ -43,24 +43,42 @@ class Window(QtWidgets.QMainWindow, pluto_control_ui.Ui_MainWindow):
         self.serial_connection = None
         self.setupUi(self)
         pi.logger.debug("Setup UI")
-        self.pB_connect.clicked.connect(self.connect_and_fetch_version)
-        self.pB_disconnect.clicked.connect(self.disconnect_serial_connection)
+        self.tE_pluto_control_version.setText("pluto-control version: " + __about__.__version__)
+        self.pB_Connect.clicked.connect(self.connect_and_fetch_version)
+        self.pB_Disconnect.clicked.connect(self.disconnect_serial_connection)
+        self.pB_SaveConfig.clicked.connect(self.save_config)
         self.populate_devices()
 
     def populate_devices(self):
         """Populate the combo box with available USB devices."""
-        self.comboBox_ports.addItem("USB Ports")  # Add hint as the first item
-        self.comboBox_ports.model().item(0).setEnabled(False)  # Disable the 'USB Ports' item
+        self.cB_PortNumber.clear()  # Clear existing items
+        self.cB_PortNumber.addItem("USB Ports")  # Add hint as the first item
+        self.cB_PortNumber.model().item(0).setEnabled(False)  # Disable the 'USB Ports' item
+
         devices = device_manager.list_usb_devices()
+        saved_port = pi.conf.get("DEFAULT", "pluto_pico_port", fallback="")  # Get the saved port from the config
+
+        found_saved_port = False
         for device in devices:
             pi.logger.debug("Found USB device: " + f"{device.device}")
-            self.comboBox_ports.addItem(f"{device.device} - {device.description}")
+            self.cB_PortNumber.addItem(f"{device.device} - {device.description}")
+            if device.device == saved_port:
+                found_saved_port = True
+
         if len(devices) == 0:
-            self.comboBox_ports.addItem("No devices found")
-            self.comboBox_ports.model().item(1).setEnabled(False)  # Disable if no devices found
+            self.cB_PortNumber.addItem("No devices found")
+            self.cB_PortNumber.model().item(1).setEnabled(False)  # Disable if no devices found
         else:
-            self.comboBox_ports.setCurrentIndex(1)  # Automatically select the first actual device
-            self.pB_connect.setEnabled(True)
+            if found_saved_port:
+                for index in range(1, self.cB_PortNumber.count()):
+                    if self.cB_PortNumber.itemText(index).startswith(saved_port):
+                        self.cB_PortNumber.setCurrentIndex(index)
+                        break
+            else:
+                pi.logger.error("pluto_pico_port is not available")
+                self.cB_PortNumber.setCurrentIndex(1)  # Automatically select the first actual device
+
+        self.pB_Connect.setEnabled(len(devices) > 0)  # Enable connect button only if devices are found
 
     def disconnect_serial_connection(self):
         if self.serial_connection and self.serial_connection.is_open:
@@ -78,62 +96,87 @@ class Window(QtWidgets.QMainWindow, pluto_control_ui.Ui_MainWindow):
                 # Ensure that the serial_connection attribute is cleared
                 self.serial_connection = None
         # Refresh the list of devices and update the UI accordingly
-        self.populate_devices()
-        self.pB_connect.setEnabled(True)
-        self.pB_disconnect.setEnabled(False)
-        self.textEdit_version.setText("")
+        self.pB_Connect.setEnabled(True)
+        self.pB_Disconnect.setEnabled(False)
+        self.tE_pluto_pico_version.setText("Disconnected")
 
     def connect_and_fetch_version(self):
         """Connect to the selected device and fetch its version."""
-        selected_device = self.comboBox_ports.currentText().split(" - ")[0]
+        selected_device = self.cB_PortNumber.currentText().split(" - ")[0]
         if selected_device != "USB Ports":
             try:
                 self.serial_connection = serial.Serial(selected_device, 115200, timeout=1)
-                self.pB_connect.setEnabled(False)
-                self.pB_disconnect.setEnabled(True)
-                time.sleep(2)  # Wait for the device to initialize
-
+                # Disable the connect button and enable the disconnect button
+                self.pB_Connect.setEnabled(False)
+                self.pB_Disconnect.setEnabled(True)
+                pi.logger.debug(f"Connected to {selected_device}")
+                # Wait for the device to initialize
+                time.sleep(1)
                 # Turn off echo and prompt (if needed)
                 self.serial_connection.write(b"shell echo off\n")
-                self.serial_connection.flush()
-                time.sleep(0.5)  # Short delay to let the command process
-
+                self.serial_connection.write(b"shell prompt off\n")
+                # Read and discard echoed command
+                self.flush_echoed_command()
                 # Clear any initial data from the buffer
                 self.serial_connection.reset_input_buffer()
-
                 # Send the 'version' command
-                self.serial_connection.write(b"version\n")
+                self.write_to_serial(b"version\n")
                 # Read the response
-                time.sleep(0.5)  # Allow time for the device to respond
                 response = self.read_response()
-                print(response)
-                # Read the response
-                time.sleep(0.5)  # Allow time for the device to respond
-                response = self.read_response()
-                print(response)
                 # Update the GUI with the version info
-                self.textEdit_version.setText(response)
-
+                self.tE_pluto_pico_version.setText(response)
             except serial.SerialException as e:
-                self.pB_connect.setEnabled(False)
-                self.pB_disconnect.setEnabled(False)
+                self.pB_Connect.setEnabled(True)
+                self.pB_Disconnect.setEnabled(False)
                 pi.logger.error(f"Serial connection error: {e}")
-                self.textEdit_version.setText(f"Failed to connect: {e}")
+                self.tE_pluto_pico_version.setText(f"Failed to connect: {e}")
         else:
-            self.textEdit_version.setText("Select a valid USB port.")
+            self.tE_pluto_pico_version.setText("Select a valid USB port.")
+
+    def flush_echoed_command(self):
+        """Flush the echoed command from the serial buffer."""
+        try:
+            while True:
+                line = self.serial_connection.readline()
+                if not line:
+                    break
+                # Optionally, log the discarded echoed command
+                pi.logger.debug(f"Discarded echoed command: {line.decode('utf-8').strip()}")
+        except serial.SerialTimeoutException as e:
+            pi.logger.error(f"Timeout while flushing echoed command: {e}")
+
+    def save_config(self):
+        pi.logger.debug("Saving Configuration")
+        self.pB_SaveConfig.setEnabled(False)
+        pi.reload_conf()
+        text = pi.conf.get("DEFAULT", "default_port")
+        print(text)
 
     def read_response(self):
         """Read the response from the device."""
-        response = self.serial_connection.read_until(b'\n').decode('utf-8', 'ignore').strip()
+        response = self.serial_connection.read_until(b"\n").decode("utf-8", "ignore").strip()
         # Remove ANSI escape sequences from response
         response = self.remove_ansi_escape_sequences(response)
+        self.log_pico_communication(response, "receive")
         return response.strip()
 
     @staticmethod
     def remove_ansi_escape_sequences(text):
         # ANSI escape code regex pattern
-        ansi_escape_pattern = re.compile(r'(?:\x1B[@-_]|[\x80-\x9F])[0-?]*[ -/]*[@-~]')
-        return ansi_escape_pattern.sub('', text)
+        ansi_escape_pattern = re.compile(r"(?:\x1B[@-_]|[\x80-\x9F])[0-?]*[ -/]*[@-~]")
+        return ansi_escape_pattern.sub("", text)
+
+    def write_to_serial(self, message):
+        """Write a message to the serial connection and log it."""
+        self.serial_connection.write(message)
+        self.log_pico_communication(message.decode("utf-8").strip(), "send")
+
+    def log_pico_communication(self, message, direction):
+        """Add a message to the terminal text edit and log it with direction."""
+        prefix = "Sent: " if direction == "send" else "Received: "
+        full_message = f"{prefix}{message}"
+        self.tE_terminal.append(full_message)
+        pi.logger.debug(full_message)
 
 
 def create_window():
