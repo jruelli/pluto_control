@@ -161,7 +161,7 @@ cython_debug/
 #.idea/
 
 # Ignore generated Python files
-/src/pluto_control/pluto_control_ui.py
+/src/pluto_control/*_ui.py
 
 # Ignore generated macOS app bundle
 /dist/*.app
