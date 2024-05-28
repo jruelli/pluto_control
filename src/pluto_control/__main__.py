@@ -6,7 +6,6 @@ __license__ = "MIT"
 __version__ = "0.1.0a1"
 
 
-
 # If we are running from a wheel, add the wheel to sys.path
 if __package__ == "":
     from os.path import dirname

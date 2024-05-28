@@ -23,7 +23,7 @@ from . import device_manager
 def extract_version_number(version_string):
     # This function assumes the version string format "App Version: x.y.z-unstable"
     # Adjust the slicing as needed if the format changes
-    match = re.search(r'\d+\.\d+\.\d+', version_string)
+    match = re.search(r"\d+\.\d+\.\d+", version_string)
     return match.group(0) if match else "Unknown version"
 
 
@@ -31,6 +31,7 @@ class Window(QtWidgets.QMainWindow, pluto_control_ui.Ui_MainWindow):
     """
     Class representing the main window of the pluto_control application.
     """
+
     def __init__(self, parent=None):
         """
         Constructor for the Window class.
@@ -55,7 +56,7 @@ class Window(QtWidgets.QMainWindow, pluto_control_ui.Ui_MainWindow):
         self.cB_PortNumber.model().item(0).setEnabled(False)  # Disable the 'USB Ports' item
 
         devices = device_manager.list_usb_devices()
-        saved_port = pi.conf.get('DEFAULT', 'pluto_pico_port', fallback="")  # Get the saved port from the config
+        saved_port = pi.conf.get("DEFAULT", "pluto_pico_port", fallback="")  # Get the saved port from the config
 
         found_saved_port = False
         for device in devices:
@@ -148,12 +149,12 @@ class Window(QtWidgets.QMainWindow, pluto_control_ui.Ui_MainWindow):
         pi.logger.debug("Saving Configuration")
         self.pB_SaveConfig.setEnabled(False)
         pi.reload_conf()
-        text = pi.conf.get('DEFAULT', 'default_port')
+        text = pi.conf.get("DEFAULT", "default_port")
         print(text)
 
     def read_response(self):
         """Read the response from the device."""
-        response = self.serial_connection.read_until(b'\n').decode('utf-8', 'ignore').strip()
+        response = self.serial_connection.read_until(b"\n").decode("utf-8", "ignore").strip()
         # Remove ANSI escape sequences from response
         response = self.remove_ansi_escape_sequences(response)
         self.log_pico_communication(response, "receive")
@@ -162,13 +163,13 @@ class Window(QtWidgets.QMainWindow, pluto_control_ui.Ui_MainWindow):
     @staticmethod
     def remove_ansi_escape_sequences(text):
         # ANSI escape code regex pattern
-        ansi_escape_pattern = re.compile(r'(?:\x1B[@-_]|[\x80-\x9F])[0-?]*[ -/]*[@-~]')
-        return ansi_escape_pattern.sub('', text)
+        ansi_escape_pattern = re.compile(r"(?:\x1B[@-_]|[\x80-\x9F])[0-?]*[ -/]*[@-~]")
+        return ansi_escape_pattern.sub("", text)
 
     def write_to_serial(self, message):
         """Write a message to the serial connection and log it."""
         self.serial_connection.write(message)
-        self.log_pico_communication(message.decode('utf-8').strip(), "send")
+        self.log_pico_communication(message.decode("utf-8").strip(), "send")
 
     def log_pico_communication(self, message, direction):
         """Add a message to the terminal text edit and log it with direction."""
