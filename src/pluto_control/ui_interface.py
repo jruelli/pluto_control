@@ -31,7 +31,6 @@ class Window(QtWidgets.QMainWindow, pluto_control_ui.Ui_MainWindow):
     """
     Class representing the main window of the pluto_control application.
     """
-
     def __init__(self, parent=None):
         """
         Constructor for the Window class.
@@ -109,6 +108,7 @@ class Window(QtWidgets.QMainWindow, pluto_control_ui.Ui_MainWindow):
                 # Disable the connect button and enable the disconnect button
                 self.pB_Connect.setEnabled(False)
                 self.pB_Disconnect.setEnabled(True)
+                pi.logger.debug(f"Connected to {selected_device}")
                 # Wait for the device to initialize
                 time.sleep(1)
                 # Turn off echo and prompt (if needed)
@@ -119,7 +119,7 @@ class Window(QtWidgets.QMainWindow, pluto_control_ui.Ui_MainWindow):
                 # Clear any initial data from the buffer
                 self.serial_connection.reset_input_buffer()
                 # Send the 'version' command
-                self.serial_connection.write(b"version\n")
+                self.write_to_serial(b"version\n")
                 # Read the response
                 response = self.read_response()
                 # Update the GUI with the version info
@@ -156,6 +156,7 @@ class Window(QtWidgets.QMainWindow, pluto_control_ui.Ui_MainWindow):
         response = self.serial_connection.read_until(b'\n').decode('utf-8', 'ignore').strip()
         # Remove ANSI escape sequences from response
         response = self.remove_ansi_escape_sequences(response)
+        self.log_pico_communication(response, "receive")
         return response.strip()
 
     @staticmethod
@@ -163,6 +164,18 @@ class Window(QtWidgets.QMainWindow, pluto_control_ui.Ui_MainWindow):
         # ANSI escape code regex pattern
         ansi_escape_pattern = re.compile(r'(?:\x1B[@-_]|[\x80-\x9F])[0-?]*[ -/]*[@-~]')
         return ansi_escape_pattern.sub('', text)
+
+    def write_to_serial(self, message):
+        """Write a message to the serial connection and log it."""
+        self.serial_connection.write(message)
+        self.log_pico_communication(message.decode('utf-8').strip(), "send")
+
+    def log_pico_communication(self, message, direction):
+        """Add a message to the terminal text edit and log it with direction."""
+        prefix = "Sent: " if direction == "send" else "Received: "
+        full_message = f"{prefix}{message}"
+        self.tE_terminal.append(full_message)
+        pi.logger.debug(full_message)
 
 
 def create_window():
