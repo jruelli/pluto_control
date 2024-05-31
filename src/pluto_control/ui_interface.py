@@ -17,8 +17,9 @@ from . import __about__
 from . import pluto_control_ui
 from . import control_config
 from . import proginit as pi
-from . import device_manager
-from .serial_handler import SerialHandler
+from . import usb_device_manager
+from . import serial_handler
+from . import pluto_pico
 
 
 def extract_version_number(version_string):
@@ -43,7 +44,9 @@ class Window(QtWidgets.QMainWindow, pluto_control_ui.Ui_MainWindow):
         super().__init__(parent)
         self.serial_connection = None
         self.setupUi(self)
-        self.serial_handler = SerialHandler(self.log_pico_communication)
+        self.serial_handler = serial_handler.SerialHandler(self.log_pico_communication)
+        # Initialize PlutoPico
+        self.pluto_pico = pluto_pico.PlutoPico(pi.conf, self.serial_handler)
         self.control_config_window = control_config.ControlConfigWindow()  # Initialize the additional window
         pi.logger.debug("Setup UI")
         self.tE_pluto_control_version.setText("pluto-control version: " + __about__.__version__)
@@ -60,7 +63,7 @@ class Window(QtWidgets.QMainWindow, pluto_control_ui.Ui_MainWindow):
         self.cB_PortNumber.addItem("USB Ports")  # Add hint as the first item
         self.cB_PortNumber.model().item(0).setEnabled(False)  # Disable the 'USB Ports' item
 
-        devices = device_manager.list_usb_devices()
+        devices = usb_device_manager.list_usb_devices()
         saved_port = pi.conf.get("DEFAULT", "pluto_pico_port", fallback="")
 
         found_saved_port = False
@@ -109,6 +112,8 @@ class Window(QtWidgets.QMainWindow, pluto_control_ui.Ui_MainWindow):
                 self.tE_pluto_pico_version.setText(response)
                 self.connected_to_pluto_pico = True
                 self.enable_ui_elements_of_pico()
+                self.pluto_pico = pluto_pico.PlutoPico(pi.conf, self.serial_handler)
+                self.pluto_pico.initialize()
             else:
                 self.pB_Connect.setEnabled(True)
                 self.pB_Disconnect.setEnabled(False)
