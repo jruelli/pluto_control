@@ -770,7 +770,7 @@ p, li { white-space: pre-wrap; }
         <x>480</x>
         <y>30</y>
         <width>331</width>
-        <height>151</height>
+        <height>121</height>
        </rect>
       </property>
       <property name="title">
@@ -868,22 +868,6 @@ p, li { white-space: pre-wrap; }
         <string>0 .. 100 %</string>
        </property>
       </widget>
-      <widget class="QPushButton" name="pB_MotorConfig">
-       <property name="enabled">
-        <bool>false</bool>
-       </property>
-       <property name="geometry">
-        <rect>
-         <x>170</x>
-         <y>110</y>
-         <width>151</width>
-         <height>28</height>
-        </rect>
-       </property>
-       <property name="text">
-        <string>Motor Config</string>
-       </property>
-      </widget>
      </widget>
      <widget class="QGroupBox" name="gB_EmergencySwitch">
       <property name="geometry">
@@ -956,7 +940,7 @@ p, li { white-space: pre-wrap; }
       <property name="title">
        <string>Control</string>
       </property>
-      <widget class="QPushButton" name="pushButton_25">
+      <widget class="QPushButton" name="pB_Control_Config">
        <property name="enabled">
         <bool>false</bool>
        </property>
@@ -1183,9 +1167,9 @@ p, li { white-space: pre-wrap; }
       <property name="geometry">
        <rect>
         <x>820</x>
-        <y>40</y>
+        <y>30</y>
         <width>351</width>
-        <height>601</height>
+        <height>581</height>
        </rect>
       </property>
       <property name="title">
@@ -1195,7 +1179,7 @@ p, li { white-space: pre-wrap; }
        <property name="geometry">
         <rect>
          <x>10</x>
-         <y>30</y>
+         <y>20</y>
          <width>331</width>
          <height>551</height>
         </rect>

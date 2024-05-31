@@ -41,7 +41,7 @@
    <property name="title">
     <string>Motor Config</string>
    </property>
-   <widget class="QTextEdit" name="textEdit_93">
+   <widget class="QTextEdit" name="tE_forward">
     <property name="geometry">
      <rect>
       <x>10</x>
@@ -61,7 +61,7 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Forward&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
     </property>
    </widget>
-   <widget class="QKeySequenceEdit" name="keySequenceEdit_12">
+   <widget class="QKeySequenceEdit" name="kSE_backward">
     <property name="geometry">
      <rect>
       <x>130</x>
@@ -71,7 +71,7 @@ p, li { white-space: pre-wrap; }
      </rect>
     </property>
    </widget>
-   <widget class="QTextEdit" name="textEdit_94">
+   <widget class="QTextEdit" name="tE_backward">
     <property name="geometry">
      <rect>
       <x>10</x>
@@ -91,7 +91,7 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Backward&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
     </property>
    </widget>
-   <widget class="QTextEdit" name="textEdit_95">
+   <widget class="QTextEdit" name="tE_left">
     <property name="geometry">
      <rect>
       <x>10</x>
@@ -111,7 +111,7 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Left&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
     </property>
    </widget>
-   <widget class="QKeySequenceEdit" name="keySequenceEdit_13">
+   <widget class="QKeySequenceEdit" name="kSE_left">
     <property name="geometry">
      <rect>
       <x>130</x>
@@ -121,7 +121,7 @@ p, li { white-space: pre-wrap; }
      </rect>
     </property>
    </widget>
-   <widget class="QKeySequenceEdit" name="keySequenceEdit_14">
+   <widget class="QKeySequenceEdit" name="kSE_right">
     <property name="geometry">
      <rect>
       <x>130</x>
@@ -131,7 +131,7 @@ p, li { white-space: pre-wrap; }
      </rect>
     </property>
    </widget>
-   <widget class="QTextEdit" name="textEdit_96">
+   <widget class="QTextEdit" name="tE_right">
     <property name="geometry">
      <rect>
       <x>10</x>
@@ -151,7 +151,7 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Right&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
     </property>
    </widget>
-   <widget class="QKeySequenceEdit" name="keySequenceEdit_15">
+   <widget class="QKeySequenceEdit" name="kSE_forward">
     <property name="geometry">
      <rect>
       <x>130</x>
@@ -161,7 +161,7 @@ p, li { white-space: pre-wrap; }
      </rect>
     </property>
    </widget>
-   <widget class="QKeySequenceEdit" name="keySequenceEdit_16">
+   <widget class="QKeySequenceEdit" name="kSE_stop">
     <property name="geometry">
      <rect>
       <x>130</x>
@@ -171,7 +171,7 @@ p, li { white-space: pre-wrap; }
      </rect>
     </property>
    </widget>
-   <widget class="QTextEdit" name="textEdit_98">
+   <widget class="QTextEdit" name="tE_stop">
     <property name="geometry">
      <rect>
       <x>10</x>

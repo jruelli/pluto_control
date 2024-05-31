@@ -13,7 +13,9 @@ import re
 
 from PyQt5 import QtCore, QtWidgets
 
-from . import pluto_control_ui, __about__
+from . import __about__
+from . import pluto_control_ui
+from . import control_config
 from . import proginit as pi
 from . import device_manager
 from .serial_handler import SerialHandler
@@ -42,12 +44,15 @@ class Window(QtWidgets.QMainWindow, pluto_control_ui.Ui_MainWindow):
         self.serial_connection = None
         self.setupUi(self)
         self.serial_handler = SerialHandler(self.log_pico_communication)
+        self.control_config_window = control_config.ControlConfigWindow()  # Initialize the additional window
         pi.logger.debug("Setup UI")
         self.tE_pluto_control_version.setText("pluto-control version: " + __about__.__version__)
         self.pB_Connect.clicked.connect(self.connect_and_fetch_version)
         self.pB_Disconnect.clicked.connect(self.disconnect_serial_connection)
         self.pB_SaveConfig.clicked.connect(self.save_config)
+        self.pB_Control_Config.clicked.connect(self.open_config_window)  # Connect button to open config window
         self.populate_devices()
+        self.connected_to_pluto_pico = False
 
     def populate_devices(self):
         """Populate the combo box with available USB devices."""
@@ -85,6 +90,8 @@ class Window(QtWidgets.QMainWindow, pluto_control_ui.Ui_MainWindow):
         self.pB_Connect.setEnabled(True)
         self.pB_Disconnect.setEnabled(False)
         self.tE_pluto_pico_version.setText("Disconnected")
+        self.connected_to_pluto_pico = False
+        self.enable_ui_elements_of_pico()
 
     def connect_and_fetch_version(self):
         """Connect to the selected device and fetch its version."""
@@ -100,12 +107,25 @@ class Window(QtWidgets.QMainWindow, pluto_control_ui.Ui_MainWindow):
                 self.serial_handler.write(b"version\n")
                 response = self.serial_handler.read()
                 self.tE_pluto_pico_version.setText(response)
+                self.connected_to_pluto_pico = True
+                self.enable_ui_elements_of_pico()
             else:
                 self.pB_Connect.setEnabled(True)
                 self.pB_Disconnect.setEnabled(False)
                 self.tE_pluto_pico_version.setText("Failed to connect.")
         else:
             self.tE_pluto_pico_version.setText("Select a valid USB port.")
+
+    def open_config_window(self):
+        """Open the additional configuration window."""
+        self.control_config_window.show()
+
+    def enable_ui_elements_of_pico(self):
+        pi.logger.debug("Enabling other UI elements")
+        if self.connected_to_pluto_pico:
+            self.pB_Control_Config.setEnabled(True)
+        else:
+            self.pB_Control_Config.setEnabled(False)
 
     def save_config(self):
         pi.logger.debug("Saving Configuration")
