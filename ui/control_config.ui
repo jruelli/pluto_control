@@ -34,7 +34,7 @@
     <rect>
      <x>30</x>
      <y>40</y>
-     <width>271</width>
+     <width>321</width>
      <height>371</height>
     </rect>
    </property>
@@ -61,17 +61,17 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Forward&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
     </property>
    </widget>
-   <widget class="QKeySequenceEdit" name="kSE_backward">
+   <widget class="QKeySequenceEdit" name="kSE_back">
     <property name="geometry">
      <rect>
       <x>130</x>
       <y>70</y>
-      <width>101</width>
+      <width>121</width>
       <height>31</height>
      </rect>
     </property>
    </widget>
-   <widget class="QTextEdit" name="tE_backward">
+   <widget class="QTextEdit" name="tE_back">
     <property name="geometry">
      <rect>
       <x>10</x>
@@ -116,7 +116,7 @@ p, li { white-space: pre-wrap; }
      <rect>
       <x>130</x>
       <y>150</y>
-      <width>101</width>
+      <width>121</width>
       <height>31</height>
      </rect>
     </property>
@@ -126,7 +126,7 @@ p, li { white-space: pre-wrap; }
      <rect>
       <x>130</x>
       <y>190</y>
-      <width>101</width>
+      <width>121</width>
       <height>31</height>
      </rect>
     </property>
@@ -156,7 +156,7 @@ p, li { white-space: pre-wrap; }
      <rect>
       <x>130</x>
       <y>30</y>
-      <width>101</width>
+      <width>121</width>
       <height>31</height>
      </rect>
     </property>
@@ -166,7 +166,7 @@ p, li { white-space: pre-wrap; }
      <rect>
       <x>130</x>
       <y>110</y>
-      <width>101</width>
+      <width>121</width>
       <height>31</height>
      </rect>
     </property>
@@ -188,153 +188,23 @@ p, li { white-space: pre-wrap; }
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:12pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Stop&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-    </property>
-   </widget>
-  </widget>
-  <widget class="QGroupBox" name="groupBox_relays_3">
-   <property name="geometry">
-    <rect>
-     <x>310</x>
-     <y>40</y>
-     <width>101</width>
-     <height>241</height>
-    </rect>
-   </property>
-   <property name="title">
-    <string>Relays</string>
-   </property>
-   <widget class="QPushButton" name="pb_relays_3">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>200</y>
-      <width>89</width>
-      <height>28</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Switch</string>
-    </property>
-   </widget>
-   <widget class="QCheckBox" name="bt_relay_16">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>30</y>
-      <width>104</width>
-      <height>24</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Relay_0</string>
-    </property>
-   </widget>
-   <widget class="QCheckBox" name="bt_relay_17">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>50</y>
-      <width>104</width>
-      <height>24</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Relay_1</string>
-    </property>
-   </widget>
-   <widget class="QCheckBox" name="bt_relay_18">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>90</y>
-      <width>104</width>
-      <height>24</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Relay_3</string>
-    </property>
-   </widget>
-   <widget class="QCheckBox" name="bt_relay_19">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>70</y>
-      <width>104</width>
-      <height>24</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Relay_2</string>
-    </property>
-   </widget>
-   <widget class="QCheckBox" name="bt_relay_20">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>170</y>
-      <width>104</width>
-      <height>24</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Relay_7</string>
-    </property>
-   </widget>
-   <widget class="QCheckBox" name="bt_relay_21">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>130</y>
-      <width>104</width>
-      <height>24</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Relay_5</string>
-    </property>
-   </widget>
-   <widget class="QCheckBox" name="bt_relay_22">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>150</y>
-      <width>104</width>
-      <height>24</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Relay_6</string>
-    </property>
-   </widget>
-   <widget class="QCheckBox" name="bt_relay_23">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>110</y>
-      <width>104</width>
-      <height>24</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Relay_4</string>
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Stop/Start&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
     </property>
    </widget>
   </widget>
   <widget class="QGroupBox" name="groupBox_18">
    <property name="geometry">
     <rect>
-     <x>430</x>
+     <x>370</x>
      <y>40</y>
-     <width>271</width>
+     <width>331</width>
      <height>371</height>
     </rect>
    </property>
    <property name="title">
     <string>Relay Config</string>
    </property>
-   <widget class="QTextEdit" name="textEdit_99">
+   <widget class="QTextEdit" name="tE_r0">
     <property name="geometry">
      <rect>
       <x>10</x>
@@ -354,17 +224,17 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Relay_0&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
     </property>
    </widget>
-   <widget class="QKeySequenceEdit" name="keySequenceEdit_17">
+   <widget class="QKeySequenceEdit" name="kSE_r1">
     <property name="geometry">
      <rect>
       <x>130</x>
       <y>70</y>
-      <width>101</width>
+      <width>121</width>
       <height>31</height>
      </rect>
     </property>
    </widget>
-   <widget class="QTextEdit" name="textEdit_100">
+   <widget class="QTextEdit" name="tE_r1">
     <property name="geometry">
      <rect>
       <x>10</x>
@@ -384,7 +254,7 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Relay_1&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
     </property>
    </widget>
-   <widget class="QTextEdit" name="textEdit_101">
+   <widget class="QTextEdit" name="tE_r3">
     <property name="geometry">
      <rect>
       <x>10</x>
@@ -404,27 +274,27 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Relay_3&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
     </property>
    </widget>
-   <widget class="QKeySequenceEdit" name="keySequenceEdit_18">
+   <widget class="QKeySequenceEdit" name="kSE_r3">
     <property name="geometry">
      <rect>
       <x>130</x>
       <y>150</y>
-      <width>101</width>
+      <width>121</width>
       <height>31</height>
      </rect>
     </property>
    </widget>
-   <widget class="QKeySequenceEdit" name="keySequenceEdit_19">
+   <widget class="QKeySequenceEdit" name="kSE_r4">
     <property name="geometry">
      <rect>
       <x>130</x>
       <y>190</y>
-      <width>101</width>
+      <width>121</width>
       <height>31</height>
      </rect>
     </property>
    </widget>
-   <widget class="QTextEdit" name="textEdit_102">
+   <widget class="QTextEdit" name="tE_r4">
     <property name="geometry">
      <rect>
       <x>10</x>
@@ -444,27 +314,27 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Relay_4&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
     </property>
    </widget>
-   <widget class="QKeySequenceEdit" name="keySequenceEdit_20">
+   <widget class="QKeySequenceEdit" name="kSE_r0">
     <property name="geometry">
      <rect>
       <x>130</x>
       <y>30</y>
-      <width>101</width>
+      <width>121</width>
       <height>31</height>
      </rect>
     </property>
    </widget>
-   <widget class="QKeySequenceEdit" name="keySequenceEdit_21">
+   <widget class="QKeySequenceEdit" name="kSE_r2">
     <property name="geometry">
      <rect>
       <x>130</x>
       <y>110</y>
-      <width>101</width>
+      <width>121</width>
       <height>31</height>
      </rect>
     </property>
    </widget>
-   <widget class="QTextEdit" name="textEdit_104">
+   <widget class="QTextEdit" name="tE_r2">
     <property name="geometry">
      <rect>
       <x>10</x>
@@ -484,7 +354,7 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Relay_2&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
     </property>
    </widget>
-   <widget class="QTextEdit" name="textEdit_103">
+   <widget class="QTextEdit" name="tE_r7">
     <property name="geometry">
      <rect>
       <x>10</x>
@@ -504,17 +374,17 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Relay_7&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
     </property>
    </widget>
-   <widget class="QKeySequenceEdit" name="keySequenceEdit_22">
+   <widget class="QKeySequenceEdit" name="kSE_r5">
     <property name="geometry">
      <rect>
       <x>130</x>
       <y>230</y>
-      <width>101</width>
+      <width>121</width>
       <height>31</height>
      </rect>
     </property>
    </widget>
-   <widget class="QTextEdit" name="textEdit_105">
+   <widget class="QTextEdit" name="tE_r5">
     <property name="geometry">
      <rect>
       <x>10</x>
@@ -534,7 +404,7 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Relay_5&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
     </property>
    </widget>
-   <widget class="QTextEdit" name="textEdit_106">
+   <widget class="QTextEdit" name="tE_r6">
     <property name="geometry">
      <rect>
       <x>10</x>
@@ -554,22 +424,22 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Relay_6&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
     </property>
    </widget>
-   <widget class="QKeySequenceEdit" name="keySequenceEdit_23">
+   <widget class="QKeySequenceEdit" name="kSE_r7">
     <property name="geometry">
      <rect>
       <x>130</x>
       <y>310</y>
-      <width>101</width>
+      <width>121</width>
       <height>31</height>
      </rect>
     </property>
    </widget>
-   <widget class="QKeySequenceEdit" name="keySequenceEdit_24">
+   <widget class="QKeySequenceEdit" name="kSE_r6">
     <property name="geometry">
      <rect>
       <x>130</x>
       <y>270</y>
-      <width>101</width>
+      <width>121</width>
       <height>31</height>
      </rect>
     </property>
