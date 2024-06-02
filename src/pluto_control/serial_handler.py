@@ -1,3 +1,11 @@
+# -*- coding: utf-8 -*-
+"""
+This module contains
+"""
+__author__ = "Jannis Ruellmann"
+__copyright__ = "Copyright (C) 2024 Jannis Ruellmann"
+__license__ = "MIT"
+
 import serial
 import serial.tools.list_ports
 import re
