@@ -39,13 +39,16 @@ class PlutoPico:
         }
 
     def load_key_mappings(self):
-        return {
+        mappings = {
             'forward': self.config.get('CONTROL_CONFIG', 'forward', fallback='W').upper(),
             'back': self.config.get('CONTROL_CONFIG', 'back', fallback='S').upper(),
             'left': self.config.get('CONTROL_CONFIG', 'left', fallback='A').upper(),
             'right': self.config.get('CONTROL_CONFIG', 'right', fallback='D').upper(),
             'handbrake': self.config.get('CONTROL_CONFIG', 'handbrake', fallback='M').upper(),
         }
+        for i in range(8):
+            mappings[f'relay_{i}'] = self.config.get('CONTROL_CONFIG', f'relay_{i}', fallback=str(i)).upper()
+        return mappings
 
     def send_command(self, command):
         command_with_newline = command + "\n"

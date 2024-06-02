@@ -179,6 +179,11 @@ class Window(QtWidgets.QMainWindow, pluto_control_ui.Ui_MainWindow):
                     self.pluto_pico.turn_left()
                 elif key == self.pluto_pico.key_mappings['right']:
                     self.pluto_pico.turn_right()
+                else:
+                    for i in range(8):
+                        if key == self.pluto_pico.key_mappings[f'relay_{i}']:
+                            self.pluto_pico.toggle_relay(i)
+                            break
                 return True
         return super().eventFilter(obj, event)
 
