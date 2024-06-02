@@ -15,9 +15,10 @@ class PlutoPico:
         self.serial_handler = existing_serial_handler
         self.motors = []
         self.hand_brake = True
+        self.keyboard_control_enabled = False
+        self.controller_control_enabled = False
         self.current_state = 'stopped'
         self.relay_state = 0
-        self.keyboard_enabled = False
         self.key_mappings = self.load_key_mappings()
         self.initialize_motors()
 
@@ -63,59 +64,31 @@ class PlutoPico:
         command = f"motors set {speed_motor1} {dir_motor1} {speed_motor2} {dir_motor2}"
         self.send_command(command)
 
-    class Motor:
-        def __init__(self, motor_number, config, send_command_func, receive_command_func):
-            self.motor_number = motor_number
-            self.config = config
-            self.send_command = send_command_func
-            self.receive_command = receive_command_func
-
-        def set_direction(self, state):
-            command = f"motor{self.motor_number} set-dir {state}"
-            self.send_command(command)
-
-        def set_accel_rate(self, value):
-            command = f"motor{self.motor_number} config-acc-rate {value}"
-            self.send_command(command)
-
-        def set_brake_rate(self, value):
-            command = f"motor{self.motor_number} config-brak-rate {value}"
-            self.send_command(command)
-
-        def set_accel_delay(self, value):
-            command = f"motor{self.motor_number} config-acc-rate-delay {value}"
-            self.send_command(command)
-
-        def set_brake_delay(self, value):
-            command = f"motor{self.motor_number} config-brak-rate-delay {value}"
-            self.send_command(command)
-
-        def initialize(self):
-            self.set_direction(self.config['direction'])
-            self.set_accel_rate(self.config['accel_rate'])
-            self.set_brake_rate(self.config['brake_rate'])
-            self.set_accel_delay(self.config['accel_delay'])
-            self.set_brake_delay(self.config['brake_delay'])
-
     def initialize(self):
         for motor in self.motors:
             motor.initialize()
 
-    def enable_keyboard_control(self):
-        self.keyboard_enabled = True
-
-    def disable_keyboard_control(self):
-        self.keyboard_enabled = False
-        self.hand_brake = False
-        # Engage handbrake
-        self.set_handbrake()
-
-    def set_handbrake(self):
-        self.hand_brake = not self.hand_brake
+    def set_handbrake(self, state):
+        self.hand_brake = state
         pi.logger.debug(f"handbrake set to: {self.hand_brake}")
-        if self.hand_brake:
+        if state:
             pi.logger.debug("Motor turned off!")
             self.stop()
+
+    def get_handbrake(self):
+        return self.hand_brake
+
+    def set_keyboard_control(self, state):
+        self.keyboard_control_enabled = state
+
+    def get_keyboard_control(self):
+        return self.keyboard_control_enabled
+
+    def set_controller_control(self, state):
+        self.controller_control_enabled = state
+
+    def get_controller_control(self):
+        return self.controller_control_enabled
 
     def go_forward(self):
         if self.hand_brake:
@@ -240,3 +213,37 @@ class PlutoPico:
 
     def relay_7(self):
         self.toggle_relay(7)
+
+    class Motor:
+        def __init__(self, motor_number, config, send_command_func, receive_command_func):
+            self.motor_number = motor_number
+            self.config = config
+            self.send_command = send_command_func
+            self.receive_command = receive_command_func
+
+        def set_direction(self, state):
+            command = f"motor{self.motor_number} set-dir {state}"
+            self.send_command(command)
+
+        def set_accel_rate(self, value):
+            command = f"motor{self.motor_number} config-acc-rate {value}"
+            self.send_command(command)
+
+        def set_brake_rate(self, value):
+            command = f"motor{self.motor_number} config-brak-rate {value}"
+            self.send_command(command)
+
+        def set_accel_delay(self, value):
+            command = f"motor{self.motor_number} config-acc-rate-delay {value}"
+            self.send_command(command)
+
+        def set_brake_delay(self, value):
+            command = f"motor{self.motor_number} config-brak-rate-delay {value}"
+            self.send_command(command)
+
+        def initialize(self):
+            self.set_direction(self.config['direction'])
+            self.set_accel_rate(self.config['accel_rate'])
+            self.set_brake_rate(self.config['brake_rate'])
+            self.set_accel_delay(self.config['accel_delay'])
+            self.set_brake_delay(self.config['brake_delay'])

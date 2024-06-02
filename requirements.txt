@@ -1,7 +1,7 @@
 setuptools
 wheel
-pyinstaller==5.9.0
-pyinstaller-hooks-contrib==2023.1
+pyinstaller==6.7.0
+pyinstaller-hooks-contrib==2024.6
 PyQt5~=5.15.10
 
 mkdocs
@@ -10,3 +10,4 @@ mkdocs-material
 typing_extensions
 mkdocs-table-reader-plugin
 pyserial~=3.5
+pygame

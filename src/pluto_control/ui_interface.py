@@ -10,6 +10,7 @@ import os
 import sys
 import time
 import re
+import pygame  # Import pygame for controller support
 
 from PyQt5 import QtCore, QtWidgets
 
@@ -56,8 +57,20 @@ class Window(QtWidgets.QMainWindow, pluto_control_ui.Ui_MainWindow):
         self.pB_Control_Config.clicked.connect(self.open_config_window)
         self.pB_KeyboardEnable.clicked.connect(self.enable_keyboard_control)  # Connect enable keyboard control button
         self.pB_KeyboardDisable.clicked.connect(self.disable_keyboard_control)
+        self.pB_ControllerEnable.clicked.connect(self.enable_controller_control)  # Connect enable controller control button
+        self.pB_ControllerDisable.clicked.connect(self.disable_controller_control)
         self.populate_devices()
         self.connected_to_pluto_pico = False
+
+        # Initialize Pygame for controller support
+        pygame.init()
+        pygame.joystick.init()
+        self.joystick = None
+        if pygame.joystick.get_count() > 0:
+            self.joystick = pygame.joystick.Joystick(0)
+            self.joystick.init()
+        self.timer = QtCore.QTimer()
+        self.timer.timeout.connect(self.poll_controller)
 
     def populate_devices(self):
         """Populate the combo box with available USB devices."""
@@ -101,7 +114,7 @@ class Window(QtWidgets.QMainWindow, pluto_control_ui.Ui_MainWindow):
     def connect_and_fetch_version(self):
         """Connect to the selected device and fetch its version."""
         selected_device = self.cB_PortNumber.currentText().split(" - ")[0]
-        if selected_device != "USB Ports":
+        if (selected_device != "USB Ports"):
             if self.serial_handler.connect(selected_device):
                 self.pB_Connect.setEnabled(False)
                 self.pB_Disconnect.setEnabled(True)
@@ -132,6 +145,7 @@ class Window(QtWidgets.QMainWindow, pluto_control_ui.Ui_MainWindow):
         if self.connected_to_pluto_pico:
             self.pB_Control_Config.setEnabled(True)
             self.pB_KeyboardEnable.setEnabled(True)
+            self.pB_ControllerEnable.setEnabled(True)
         else:
             self.pB_Control_Config.setEnabled(False)
 
@@ -148,7 +162,7 @@ class Window(QtWidgets.QMainWindow, pluto_control_ui.Ui_MainWindow):
         pi.logger.debug(full_message)
 
     def enable_keyboard_control(self):
-        self.pluto_pico.enable_keyboard_control()
+        self.pluto_pico.set_keyboard_control(True)
         self.pB_KeyboardEnable.setChecked(True)
         self.pB_KeyboardDisable.setChecked(False)
         self.pB_KeyboardDisable.setEnabled(True)
@@ -157,7 +171,8 @@ class Window(QtWidgets.QMainWindow, pluto_control_ui.Ui_MainWindow):
         pi.logger.debug("Keyboard control enabled")
 
     def disable_keyboard_control(self):
-        self.pluto_pico.disable_keyboard_control()
+        self.pluto_pico.set_keyboard_control(False)
+        self.pluto_pico.set_handbrake(True)
         self.pB_KeyboardEnable.setChecked(False)
         self.pB_KeyboardDisable.setChecked(True)
         self.pB_KeyboardEnable.setEnabled(True)
@@ -165,12 +180,53 @@ class Window(QtWidgets.QMainWindow, pluto_control_ui.Ui_MainWindow):
         self.removeEventFilter(self)
         pi.logger.debug("Keyboard control disabled")
 
+    def enable_controller_control(self):
+        if self.joystick:
+            self.pluto_pico.set_controller_control(True)
+            self.pB_ControllerEnable.setChecked(True)
+            self.pB_ControllerDisable.setChecked(False)
+            self.pB_ControllerDisable.setEnabled(True)
+            self.pB_ControllerEnable.setEnabled(False)
+            self.timer.start(100)  # Poll controller every 100 ms
+            pi.logger.debug("Controller control enabled")
+
+    def disable_controller_control(self):
+        self.pluto_pico.set_controller_control(False)
+        self.pluto_pico.set_handbrake(True)
+        self.pB_ControllerEnable.setChecked(False)
+        self.pB_ControllerDisable.setChecked(True)
+        self.pB_ControllerEnable.setEnabled(True)
+        self.pB_ControllerDisable.setEnabled(False)
+        self.timer.stop()
+        pi.logger.debug("Controller control disabled")
+
+    def poll_controller(self):
+        pygame.event.pump()
+        if self.pluto_pico.get_controller_control():
+            axis_0 = self.joystick.get_axis(0)
+            axis_1 = self.joystick.get_axis(1)
+            for i in range(self.joystick.get_numbuttons()):
+                if self.joystick.get_button(i):
+                    pi.logger.debug(f"Button {i} pressed")
+            if axis_1 < -0.5:
+                self.pluto_pico.go_forward()
+            elif axis_1 > 0.5:
+                self.pluto_pico.go_back()
+            if axis_0 < -0.5:
+                self.pluto_pico.turn_left()
+            elif axis_0 > 0.5:
+                self.pluto_pico.turn_right()
+
+            start_button = self.joystick.get_button(6)  # Default Start button, adjust as needed
+            if start_button:
+                self.pluto_pico.set_handbrake(not self.pluto_pico.get_handbrake())
+
     def eventFilter(self, obj, event):
         if event.type() == QtCore.QEvent.KeyPress:
-            if self.pluto_pico.keyboard_enabled:
+            if self.pluto_pico.get_keyboard_control():
                 key = event.text().upper()
                 if key == self.pluto_pico.key_mappings['handbrake']:
-                    self.pluto_pico.set_handbrake()
+                    self.pluto_pico.set_handbrake(not self.pluto_pico.get_handbrake())
                 elif key == self.pluto_pico.key_mappings['forward']:
                     self.pluto_pico.go_forward()
                 elif key == self.pluto_pico.key_mappings['back']:
