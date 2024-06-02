@@ -9,15 +9,18 @@ __license__ = "MIT"
 import os
 import sys
 import time
-import serial
-import serial.tools.list_ports
 import re
+import pygame  # Import pygame for controller support
 
 from PyQt5 import QtCore, QtWidgets
 
-from . import pluto_control_ui, __about__
+from . import __about__
+from . import pluto_control_ui
+from . import control_config
 from . import proginit as pi
-from . import device_manager
+from . import usb_device_manager
+from . import serial_handler
+from . import pluto_pico
 
 
 def extract_version_number(version_string):
@@ -42,21 +45,41 @@ class Window(QtWidgets.QMainWindow, pluto_control_ui.Ui_MainWindow):
         super().__init__(parent)
         self.serial_connection = None
         self.setupUi(self)
+        self.serial_handler = serial_handler.SerialHandler(self.log_pico_communication)
+        # Initialize PlutoPico
+        self.pluto_pico = pluto_pico.PlutoPico(pi.conf, self.serial_handler)
+        self.control_config_window = control_config.ControlConfigWindow()
         pi.logger.debug("Setup UI")
         self.tE_pluto_control_version.setText("pluto-control version: " + __about__.__version__)
         self.pB_Connect.clicked.connect(self.connect_and_fetch_version)
         self.pB_Disconnect.clicked.connect(self.disconnect_serial_connection)
         self.pB_SaveConfig.clicked.connect(self.save_config)
+        self.pB_Control_Config.clicked.connect(self.open_config_window)
+        self.pB_KeyboardEnable.clicked.connect(self.enable_keyboard_control)  # Connect enable keyboard control button
+        self.pB_KeyboardDisable.clicked.connect(self.disable_keyboard_control)
+        self.pB_ControllerEnable.clicked.connect(self.enable_controller_control)  # Connect enable controller control button
+        self.pB_ControllerDisable.clicked.connect(self.disable_controller_control)
         self.populate_devices()
+        self.connected_to_pluto_pico = False
+
+        # Initialize Pygame for controller support
+        pygame.init()
+        pygame.joystick.init()
+        self.joystick = None
+        if pygame.joystick.get_count() > 0:
+            self.joystick = pygame.joystick.Joystick(0)
+            self.joystick.init()
+        self.timer = QtCore.QTimer()
+        self.timer.timeout.connect(self.poll_controller)
 
     def populate_devices(self):
         """Populate the combo box with available USB devices."""
-        self.cB_PortNumber.clear()  # Clear existing items
-        self.cB_PortNumber.addItem("USB Ports")  # Add hint as the first item
-        self.cB_PortNumber.model().item(0).setEnabled(False)  # Disable the 'USB Ports' item
+        self.cB_PortNumber.clear()
+        self.cB_PortNumber.addItem("USB Ports")
+        self.cB_PortNumber.model().item(0).setEnabled(False)
 
-        devices = device_manager.list_usb_devices()
-        saved_port = pi.conf.get("DEFAULT", "pluto_pico_port", fallback="")  # Get the saved port from the config
+        devices = usb_device_manager.list_usb_devices()
+        saved_port = pi.conf.get("DEFAULT", "pluto_pico_port", fallback="")
 
         found_saved_port = False
         for device in devices:
@@ -67,7 +90,7 @@ class Window(QtWidgets.QMainWindow, pluto_control_ui.Ui_MainWindow):
 
         if len(devices) == 0:
             self.cB_PortNumber.addItem("No devices found")
-            self.cB_PortNumber.model().item(1).setEnabled(False)  # Disable if no devices found
+            self.cB_PortNumber.model().item(1).setEnabled(False)
         else:
             if found_saved_port:
                 for index in range(1, self.cB_PortNumber.count()):
@@ -76,100 +99,60 @@ class Window(QtWidgets.QMainWindow, pluto_control_ui.Ui_MainWindow):
                         break
             else:
                 pi.logger.error("pluto_pico_port is not available")
-                self.cB_PortNumber.setCurrentIndex(1)  # Automatically select the first actual device
+                self.cB_PortNumber.setCurrentIndex(1)
 
-        self.pB_Connect.setEnabled(len(devices) > 0)  # Enable connect button only if devices are found
+        self.pB_Connect.setEnabled(len(devices) > 0)
 
     def disconnect_serial_connection(self):
-        if self.serial_connection and self.serial_connection.is_open:
-            try:
-                # Flush output & input buffer
-                self.serial_connection.flushOutput()
-                self.serial_connection.flushInput()
-                # Close the serial connection
-                self.serial_connection.close()
-                pi.logger.debug("Serial connection closed")
-            except (serial.SerialException, ValueError) as e:
-                # Handle exceptions that could be raised by the above operations
-                pi.logger.error(f"Error closing serial connection: {e}")
-            finally:
-                # Ensure that the serial_connection attribute is cleared
-                self.serial_connection = None
-        # Refresh the list of devices and update the UI accordingly
+        self.serial_handler.disconnect()
         self.pB_Connect.setEnabled(True)
         self.pB_Disconnect.setEnabled(False)
         self.tE_pluto_pico_version.setText("Disconnected")
+        self.connected_to_pluto_pico = False
+        self.enable_ui_elements_of_pico()
 
     def connect_and_fetch_version(self):
         """Connect to the selected device and fetch its version."""
         selected_device = self.cB_PortNumber.currentText().split(" - ")[0]
-        if selected_device != "USB Ports":
-            try:
-                self.serial_connection = serial.Serial(selected_device, 115200, timeout=1)
-                # Disable the connect button and enable the disconnect button
+        if (selected_device != "USB Ports"):
+            if self.serial_handler.connect(selected_device):
                 self.pB_Connect.setEnabled(False)
                 self.pB_Disconnect.setEnabled(True)
-                pi.logger.debug(f"Connected to {selected_device}")
-                # Wait for the device to initialize
                 time.sleep(1)
-                # Turn off echo and prompt (if needed)
-                self.serial_connection.write(b"shell echo off\n")
-                self.serial_connection.write(b"shell prompt off\n")
-                # Read and discard echoed command
-                self.flush_echoed_command()
-                # Clear any initial data from the buffer
-                self.serial_connection.reset_input_buffer()
-                # Send the 'version' command
-                self.write_to_serial(b"version\n")
-                # Read the response
-                response = self.read_response()
-                # Update the GUI with the version info
+                self.serial_handler.write(b"shell echo off\n")
+                self.serial_handler.write(b"shell prompt off\n")
+                self.serial_handler.flush_echoed_command()
+                self.serial_handler.write(b"version\n")
+                response = self.serial_handler.read()
                 self.tE_pluto_pico_version.setText(response)
-            except serial.SerialException as e:
+                self.connected_to_pluto_pico = True
+                self.enable_ui_elements_of_pico()
+                self.pluto_pico = pluto_pico.PlutoPico(pi.conf, self.serial_handler)
+                self.pluto_pico.initialize()
+            else:
                 self.pB_Connect.setEnabled(True)
                 self.pB_Disconnect.setEnabled(False)
-                pi.logger.error(f"Serial connection error: {e}")
-                self.tE_pluto_pico_version.setText(f"Failed to connect: {e}")
+                self.tE_pluto_pico_version.setText("Failed to connect.")
         else:
             self.tE_pluto_pico_version.setText("Select a valid USB port.")
 
-    def flush_echoed_command(self):
-        """Flush the echoed command from the serial buffer."""
-        try:
-            while True:
-                line = self.serial_connection.readline()
-                if not line:
-                    break
-                # Optionally, log the discarded echoed command
-                pi.logger.debug(f"Discarded echoed command: {line.decode('utf-8').strip()}")
-        except serial.SerialTimeoutException as e:
-            pi.logger.error(f"Timeout while flushing echoed command: {e}")
+    def open_config_window(self):
+        """Open the additional configuration window."""
+        self.control_config_window.show()
+
+    def enable_ui_elements_of_pico(self):
+        pi.logger.debug("Enabling other UI elements")
+        if self.connected_to_pluto_pico:
+            self.pB_Control_Config.setEnabled(True)
+            self.pB_KeyboardEnable.setEnabled(True)
+            self.pB_ControllerEnable.setEnabled(True)
+        else:
+            self.pB_Control_Config.setEnabled(False)
 
     def save_config(self):
         pi.logger.debug("Saving Configuration")
-        self.pB_SaveConfig.setEnabled(False)
-        pi.reload_conf()
-        text = pi.conf.get("DEFAULT", "default_port")
-        print(text)
-
-    def read_response(self):
-        """Read the response from the device."""
-        response = self.serial_connection.read_until(b"\n").decode("utf-8", "ignore").strip()
-        # Remove ANSI escape sequences from response
-        response = self.remove_ansi_escape_sequences(response)
-        self.log_pico_communication(response, "receive")
-        return response.strip()
-
-    @staticmethod
-    def remove_ansi_escape_sequences(text):
-        # ANSI escape code regex pattern
-        ansi_escape_pattern = re.compile(r"(?:\x1B[@-_]|[\x80-\x9F])[0-?]*[ -/]*[@-~]")
-        return ansi_escape_pattern.sub("", text)
-
-    def write_to_serial(self, message):
-        """Write a message to the serial connection and log it."""
-        self.serial_connection.write(message)
-        self.log_pico_communication(message.decode("utf-8").strip(), "send")
+        pi.conf.set("DEFAULT", "pluto_pico_port", self.cB_PortNumber.currentText().split(" - ")[0])
+        pi.save_conf()
 
     def log_pico_communication(self, message, direction):
         """Add a message to the terminal text edit and log it with direction."""
@@ -177,6 +160,88 @@ class Window(QtWidgets.QMainWindow, pluto_control_ui.Ui_MainWindow):
         full_message = f"{prefix}{message}"
         self.tE_terminal.append(full_message)
         pi.logger.debug(full_message)
+
+    def enable_keyboard_control(self):
+        self.pluto_pico.set_keyboard_control(True)
+        self.pB_KeyboardEnable.setChecked(True)
+        self.pB_KeyboardDisable.setChecked(False)
+        self.pB_KeyboardDisable.setEnabled(True)
+        self.pB_KeyboardEnable.setEnabled(False)
+        self.installEventFilter(self)
+        pi.logger.debug("Keyboard control enabled")
+
+    def disable_keyboard_control(self):
+        self.pluto_pico.set_keyboard_control(False)
+        self.pluto_pico.set_handbrake(True)
+        self.pB_KeyboardEnable.setChecked(False)
+        self.pB_KeyboardDisable.setChecked(True)
+        self.pB_KeyboardEnable.setEnabled(True)
+        self.pB_KeyboardDisable.setEnabled(False)
+        self.removeEventFilter(self)
+        pi.logger.debug("Keyboard control disabled")
+
+    def enable_controller_control(self):
+        if self.joystick:
+            self.pluto_pico.set_controller_control(True)
+            self.pB_ControllerEnable.setChecked(True)
+            self.pB_ControllerDisable.setChecked(False)
+            self.pB_ControllerDisable.setEnabled(True)
+            self.pB_ControllerEnable.setEnabled(False)
+            self.timer.start(100)  # Poll controller every 100 ms
+            pi.logger.debug("Controller control enabled")
+
+    def disable_controller_control(self):
+        self.pluto_pico.set_controller_control(False)
+        self.pluto_pico.set_handbrake(True)
+        self.pB_ControllerEnable.setChecked(False)
+        self.pB_ControllerDisable.setChecked(True)
+        self.pB_ControllerEnable.setEnabled(True)
+        self.pB_ControllerDisable.setEnabled(False)
+        self.timer.stop()
+        pi.logger.debug("Controller control disabled")
+
+    def poll_controller(self):
+        pygame.event.pump()
+        if self.pluto_pico.get_controller_control():
+            axis_0 = self.joystick.get_axis(0)
+            axis_1 = self.joystick.get_axis(1)
+            for i in range(self.joystick.get_numbuttons()):
+                if self.joystick.get_button(i):
+                    pi.logger.debug(f"Button {i} pressed")
+            if axis_1 < -0.5:
+                self.pluto_pico.go_forward()
+            elif axis_1 > 0.5:
+                self.pluto_pico.go_back()
+            if axis_0 < -0.5:
+                self.pluto_pico.turn_left()
+            elif axis_0 > 0.5:
+                self.pluto_pico.turn_right()
+
+            start_button = self.joystick.get_button(6)  # Default Start button, adjust as needed
+            if start_button:
+                self.pluto_pico.set_handbrake(not self.pluto_pico.get_handbrake())
+
+    def eventFilter(self, obj, event):
+        if event.type() == QtCore.QEvent.KeyPress:
+            if self.pluto_pico.get_keyboard_control():
+                key = event.text().upper()
+                if key == self.pluto_pico.key_mappings['handbrake']:
+                    self.pluto_pico.set_handbrake(not self.pluto_pico.get_handbrake())
+                elif key == self.pluto_pico.key_mappings['forward']:
+                    self.pluto_pico.go_forward()
+                elif key == self.pluto_pico.key_mappings['back']:
+                    self.pluto_pico.go_back()
+                elif key == self.pluto_pico.key_mappings['left']:
+                    self.pluto_pico.turn_left()
+                elif key == self.pluto_pico.key_mappings['right']:
+                    self.pluto_pico.turn_right()
+                else:
+                    for i in range(8):
+                        if key == self.pluto_pico.key_mappings[f'relay_{i}']:
+                            self.pluto_pico.toggle_relay(i)
+                            break
+                return True
+        return super().eventFilter(obj, event)
 
 
 def create_window():

@@ -14,9 +14,9 @@ from shutil import copy, move
 
 programname = "pluto_control"  # Program name
 
-conf_rw = False  # If you want so save the configuration with .save_conf() set to True
-conf_rw_save = False  # Create new conf file in same directory and move to old one
-conf_rw_backup = False  # Keep a backup of old conf file [filename].bak
+conf_rw = True  # If you want so save the configuration with .save_conf() set to True
+conf_rw_save = True  # Create new conf file in same directory and move to old one
+conf_rw_backup = True  # Keep a backup of old conf file [filename].bak
 
 conf = ConfigParser()
 logger = logging.getLogger()
