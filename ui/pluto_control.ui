@@ -1184,6 +1184,9 @@ p, li { white-space: pre-wrap; }
          <height>531</height>
         </rect>
        </property>
+       <property name="readOnly">
+        <bool>true</bool>
+       </property>
        <property name="html">
         <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
@@ -1196,9 +1199,9 @@ p, li { white-space: pre-wrap; }
        </property>
       </widget>
      </widget>
-     <widget class="QPushButton" name="pB_KeyxboardEnable">
+     <widget class="QPushButton" name="pB_KeyboardEnable">
       <property name="enabled">
-       <bool>true</bool>
+       <bool>false</bool>
       </property>
       <property name="geometry">
        <rect>
@@ -1215,7 +1218,7 @@ p, li { white-space: pre-wrap; }
        <bool>true</bool>
       </property>
      </widget>
-     <widget class="QPushButton" name="pB_KeyxboardDisable">
+     <widget class="QPushButton" name="pB_KeyboardDisable">
       <property name="enabled">
        <bool>false</bool>
       </property>

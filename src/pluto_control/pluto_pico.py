@@ -17,6 +17,8 @@ class PlutoPico:
         self.hand_brake = True
         self.current_state = 'stopped'
         self.relay_state = 0
+        self.keyboard_enabled = False
+        self.key_mappings = self.load_key_mappings()
         self.initialize_motors()
 
     def initialize_motors(self):
@@ -34,6 +36,15 @@ class PlutoPico:
             'brake_rate': self.config.getint(section, 'brake_step_size', fallback=100),
             'accel_delay': self.config.getint(section, 'accel_step_delay', fallback=1),
             'brake_delay': self.config.getint(section, 'brake_step_delay', fallback=1),
+        }
+
+    def load_key_mappings(self):
+        return {
+            'forward': self.config.get('CONTROL_CONFIG', 'forward', fallback='W').upper(),
+            'back': self.config.get('CONTROL_CONFIG', 'back', fallback='S').upper(),
+            'left': self.config.get('CONTROL_CONFIG', 'left', fallback='A').upper(),
+            'right': self.config.get('CONTROL_CONFIG', 'right', fallback='D').upper(),
+            'handbrake': self.config.get('CONTROL_CONFIG', 'handbrake', fallback='M').upper(),
         }
 
     def send_command(self, command):
@@ -87,6 +98,15 @@ class PlutoPico:
         for motor in self.motors:
             motor.initialize()
 
+    def enable_keyboard_control(self):
+        self.keyboard_enabled = True
+
+    def disable_keyboard_control(self):
+        self.keyboard_enabled = False
+        self.hand_brake = False
+        # Engage handbrake
+        self.set_handbrake()
+
     def set_handbrake(self):
         self.hand_brake = not self.hand_brake
         pi.logger.debug(f"handbrake set to: {self.hand_brake}")
@@ -98,7 +118,7 @@ class PlutoPico:
         if self.hand_brake:
             pi.logger.debug(f"movement blocked: handbrake set to: {self.hand_brake}")
             self.stop()
-        elif self.current_state == 'backward':
+        elif self.current_state in ['back', 'back-left', 'back-right']:
             pi.logger.debug("stopping backward movement")
             self.stop()
         elif self.current_state != 'forward':
@@ -106,23 +126,19 @@ class PlutoPico:
             self.set_motors(self.motors[0].config['max_speed'], self.motors[0].config['direction'],
                             self.motors[1].config['max_speed'], self.motors[1].config['direction'])
             self.current_state = 'forward'
-        else:
-            pi.logger.debug("already moving forward")
 
     def go_back(self):
         if self.hand_brake:
             pi.logger.debug(f"movement blocked: handbrake set to: {self.hand_brake}")
             self.stop()
-        elif self.current_state == 'forward':
+        elif self.current_state in ['forward', 'forward-left', 'forward-right']:
             pi.logger.debug("stopping forward movement")
             self.stop()
-        elif self.current_state != 'backward':
+        elif self.current_state != 'back':
             pi.logger.debug("going backward")
             self.set_motors(self.motors[0].config['max_speed'], 1 - self.motors[0].config['direction'],
                             self.motors[1].config['max_speed'], 1 - self.motors[1].config['direction'])
-            self.current_state = 'backward'
-        else:
-            pi.logger.debug("already moving backward")
+            self.current_state = 'back'
 
     def stop(self):
         pi.logger.debug("stopping")
@@ -131,24 +147,66 @@ class PlutoPico:
 
     def turn_left(self):
         if not self.hand_brake:
-            pi.logger.debug(f"movement blocked: handbrake set to: {self.hand_brake}")
-            self.set_motors(int(self.motors[0].config['max_speed'] * 0.5), self.motors[0].config['direction'],
-                            self.motors[1].config['max_speed'], self.motors[1].config['direction'])
+            if self.current_state == 'forward':
+                pi.logger.debug("turning forward-left")
+                self.set_motors(int(self.motors[0].config['max_speed'] * 0.5), self.motors[0].config['direction'],
+                                self.motors[1].config['max_speed'], self.motors[1].config['direction'])
+                self.current_state = 'forward-left'
+            elif self.current_state == 'back':
+                pi.logger.debug("turning back-left")
+                self.set_motors(int(self.motors[0].config['max_speed'] * 0.5), 1 - self.motors[0].config['direction'],
+                                self.motors[1].config['max_speed'], 1 - self.motors[1].config['direction'])
+                self.current_state = 'back-left'
+            elif self.current_state == 'back-left' or self.current_state == 'forward-left':
+                pi.logger.debug("maintaining left movement")
+            elif self.current_state == 'back-right':
+                # Go straight back
+                self.go_back()
+            elif self.current_state == 'forward-right':
+                # Go straight forward
+                self.go_forward()
+            else:
+                pi.logger.debug("rotate in place left")
+                self.set_motors(int(self.motors[0].config['max_speed'] * 0.5), self.motors[0].config['direction'],
+                                int(self.motors[1].config['max_speed'] * 0.5), 1 - self.motors[1].config['direction'])
+                self.current_state = 'rotate-in-place-left'
 
     def turn_right(self):
         if not self.hand_brake:
-            pi.logger.debug(f"movement blocked: handbrake set to: {self.hand_brake}")
-            self.set_motors(self.motors[0].config['max_speed'], self.motors[0].config['direction'],
-                            int(self.motors[1].config['max_speed'] * 0.5), self.motors[1].config['direction'])
+            if self.current_state == 'forward':
+                pi.logger.debug("turning forward-right")
+                self.set_motors(self.motors[0].config['max_speed'], self.motors[0].config['direction'],
+                                int(self.motors[1].config['max_speed'] * 0.5), self.motors[1].config['direction'])
+                self.current_state = 'forward-right'
+            elif self.current_state == 'back':
+                pi.logger.debug("turning back-right")
+                self.set_motors(self.motors[0].config['max_speed'], 1 - self.motors[0].config['direction'],
+                                int(self.motors[1].config['max_speed'] * 0.5), 1 - self.motors[1].config['direction'])
+                self.current_state = 'back-right'
+            elif self.current_state == 'back-right' or self.current_state == 'forward-right':
+                pi.logger.debug("maintaining right movement")
+            elif self.current_state == 'forward-right':
+                # Go straight forward
+                self.go_forward()
+            elif self.current_state == 'back-right':
+                # Go straight back
+                self.go_back()
+            else:
+                pi.logger.debug("rotate in place right")
+                self.set_motors(int(self.motors[0].config['max_speed'] * 0.5), 1 - self.motors[0].config['direction'],
+                                int(self.motors[1].config['max_speed'] * 0.5), self.motors[1].config['direction'])
+                self.current_state = 'rotate-in-place-right'
 
     def rotate_in_place(self, direction):
         if not self.hand_brake:
             if direction == 'left':
                 self.set_motors(int(self.motors[0].config['max_speed'] * 0.5), self.motors[0].config['direction'],
                                 int(self.motors[1].config['max_speed'] * 0.5), 1 - self.motors[1].config['direction'])
+                self.current_state = 'rotate-in-place-left'
             elif direction == 'right':
                 self.set_motors(int(self.motors[0].config['max_speed'] * 0.5), 1 - self.motors[0].config['direction'],
                                 int(self.motors[1].config['max_speed'] * 0.5), self.motors[1].config['direction'])
+                self.current_state = 'rotate-in-place-right'
 
     def toggle_relay(self, relay_number):
         pi.logger.debug(f"Toggling relay: {relay_number}")

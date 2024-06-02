@@ -33,7 +33,7 @@ class ControlConfigWindow(QtWidgets.QDialog, control_config_ui.Ui_Dialog):
         back_key = pi.conf.get('CONTROL_CONFIG', 'back', fallback='s')
         left_key = pi.conf.get('CONTROL_CONFIG', 'left', fallback='a')
         right_key = pi.conf.get('CONTROL_CONFIG', 'right', fallback='d')
-        stop_key = pi.conf.get('CONTROL_CONFIG', 'stop', fallback='space')
+        stop_key = pi.conf.get('CONTROL_CONFIG', 'handbrake', fallback='m')
 
         self.kSE_forward.setKeySequence(forward_key)
         self.kSE_back.setKeySequence(back_key)
@@ -73,13 +73,13 @@ class ControlConfigWindow(QtWidgets.QDialog, control_config_ui.Ui_Dialog):
         back_key = self.kSE_back.keySequence().toString()
         left_key = self.kSE_left.keySequence().toString()
         right_key = self.kSE_right.keySequence().toString()
-        stop_key = self.kSE_stop.keySequence().toString()
+        handbrake_key = self.kSE_stop.keySequence().toString()
 
         pi.conf.set('CONTROL_CONFIG', 'forward', forward_key)
         pi.conf.set('CONTROL_CONFIG', 'back', back_key)
         pi.conf.set('CONTROL_CONFIG', 'left', left_key)
         pi.conf.set('CONTROL_CONFIG', 'right', right_key)
-        pi.conf.set('CONTROL_CONFIG', 'stop', stop_key)
+        pi.conf.set('CONTROL_CONFIG', 'handbrake', handbrake_key)
 
     def save_relay_keys(self):
         """Save the relay keys configuration to the config file."""

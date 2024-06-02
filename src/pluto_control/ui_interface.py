@@ -47,21 +47,23 @@ class Window(QtWidgets.QMainWindow, pluto_control_ui.Ui_MainWindow):
         self.serial_handler = serial_handler.SerialHandler(self.log_pico_communication)
         # Initialize PlutoPico
         self.pluto_pico = pluto_pico.PlutoPico(pi.conf, self.serial_handler)
-        self.control_config_window = control_config.ControlConfigWindow()  # Initialize the additional window
+        self.control_config_window = control_config.ControlConfigWindow()
         pi.logger.debug("Setup UI")
         self.tE_pluto_control_version.setText("pluto-control version: " + __about__.__version__)
         self.pB_Connect.clicked.connect(self.connect_and_fetch_version)
         self.pB_Disconnect.clicked.connect(self.disconnect_serial_connection)
         self.pB_SaveConfig.clicked.connect(self.save_config)
-        self.pB_Control_Config.clicked.connect(self.open_config_window)  # Connect button to open config window
+        self.pB_Control_Config.clicked.connect(self.open_config_window)
+        self.pB_KeyboardEnable.clicked.connect(self.enable_keyboard_control)  # Connect enable keyboard control button
+        self.pB_KeyboardDisable.clicked.connect(self.disable_keyboard_control)
         self.populate_devices()
         self.connected_to_pluto_pico = False
 
     def populate_devices(self):
         """Populate the combo box with available USB devices."""
-        self.cB_PortNumber.clear()  # Clear existing items
-        self.cB_PortNumber.addItem("USB Ports")  # Add hint as the first item
-        self.cB_PortNumber.model().item(0).setEnabled(False)  # Disable the 'USB Ports' item
+        self.cB_PortNumber.clear()
+        self.cB_PortNumber.addItem("USB Ports")
+        self.cB_PortNumber.model().item(0).setEnabled(False)
 
         devices = usb_device_manager.list_usb_devices()
         saved_port = pi.conf.get("DEFAULT", "pluto_pico_port", fallback="")
@@ -75,7 +77,7 @@ class Window(QtWidgets.QMainWindow, pluto_control_ui.Ui_MainWindow):
 
         if len(devices) == 0:
             self.cB_PortNumber.addItem("No devices found")
-            self.cB_PortNumber.model().item(1).setEnabled(False)  # Disable if no devices found
+            self.cB_PortNumber.model().item(1).setEnabled(False)
         else:
             if found_saved_port:
                 for index in range(1, self.cB_PortNumber.count()):
@@ -84,9 +86,9 @@ class Window(QtWidgets.QMainWindow, pluto_control_ui.Ui_MainWindow):
                         break
             else:
                 pi.logger.error("pluto_pico_port is not available")
-                self.cB_PortNumber.setCurrentIndex(1)  # Automatically select the first actual device
+                self.cB_PortNumber.setCurrentIndex(1)
 
-        self.pB_Connect.setEnabled(len(devices) > 0)  # Enable connect button only if devices are found
+        self.pB_Connect.setEnabled(len(devices) > 0)
 
     def disconnect_serial_connection(self):
         self.serial_handler.disconnect()
@@ -129,6 +131,7 @@ class Window(QtWidgets.QMainWindow, pluto_control_ui.Ui_MainWindow):
         pi.logger.debug("Enabling other UI elements")
         if self.connected_to_pluto_pico:
             self.pB_Control_Config.setEnabled(True)
+            self.pB_KeyboardEnable.setEnabled(True)
         else:
             self.pB_Control_Config.setEnabled(False)
 
@@ -143,6 +146,41 @@ class Window(QtWidgets.QMainWindow, pluto_control_ui.Ui_MainWindow):
         full_message = f"{prefix}{message}"
         self.tE_terminal.append(full_message)
         pi.logger.debug(full_message)
+
+    def enable_keyboard_control(self):
+        self.pluto_pico.enable_keyboard_control()
+        self.pB_KeyboardEnable.setChecked(True)
+        self.pB_KeyboardDisable.setChecked(False)
+        self.pB_KeyboardDisable.setEnabled(True)
+        self.pB_KeyboardEnable.setEnabled(False)
+        self.installEventFilter(self)
+        pi.logger.debug("Keyboard control enabled")
+
+    def disable_keyboard_control(self):
+        self.pluto_pico.disable_keyboard_control()
+        self.pB_KeyboardEnable.setChecked(False)
+        self.pB_KeyboardDisable.setChecked(True)
+        self.pB_KeyboardEnable.setEnabled(True)
+        self.pB_KeyboardDisable.setEnabled(False)
+        self.removeEventFilter(self)
+        pi.logger.debug("Keyboard control disabled")
+
+    def eventFilter(self, obj, event):
+        if event.type() == QtCore.QEvent.KeyPress:
+            if self.pluto_pico.keyboard_enabled:
+                key = event.text().upper()
+                if key == self.pluto_pico.key_mappings['handbrake']:
+                    self.pluto_pico.set_handbrake()
+                elif key == self.pluto_pico.key_mappings['forward']:
+                    self.pluto_pico.go_forward()
+                elif key == self.pluto_pico.key_mappings['back']:
+                    self.pluto_pico.go_back()
+                elif key == self.pluto_pico.key_mappings['left']:
+                    self.pluto_pico.turn_left()
+                elif key == self.pluto_pico.key_mappings['right']:
+                    self.pluto_pico.turn_right()
+                return True
+        return super().eventFilter(obj, event)
 
 
 def create_window():
