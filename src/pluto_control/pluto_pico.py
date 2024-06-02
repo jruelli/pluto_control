@@ -15,7 +15,8 @@ class PlutoPico:
         self.serial_handler = existing_serial_handler
         self.motors = []
         self.hand_brake = True
-        self.current_state = 'stopped'  # Possible states: 'stopped', 'forward', 'backward'
+        self.current_state = 'stopped'
+        self.relay_state = 0
         self.initialize_motors()
 
     def initialize_motors(self):
@@ -148,3 +149,33 @@ class PlutoPico:
             elif direction == 'right':
                 self.set_motors(int(self.motors[0].config['max_speed'] * 0.5), 1 - self.motors[0].config['direction'],
                                 int(self.motors[1].config['max_speed'] * 0.5), self.motors[1].config['direction'])
+
+    def toggle_relay(self, relay_number):
+        pi.logger.debug(f"Toggling relay: {relay_number}")
+        self.relay_state ^= (1 << relay_number)
+        command = f"relays --set-bytes {self.relay_state}"
+        self.send_command(command)
+
+    def relay_0(self):
+        self.toggle_relay(0)
+
+    def relay_1(self):
+        self.toggle_relay(1)
+
+    def relay_2(self):
+        self.toggle_relay(2)
+
+    def relay_3(self):
+        self.toggle_relay(3)
+
+    def relay_4(self):
+        self.toggle_relay(4)
+
+    def relay_5(self):
+        self.toggle_relay(5)
+
+    def relay_6(self):
+        self.toggle_relay(6)
+
+    def relay_7(self):
+        self.toggle_relay(7)
