@@ -13,8 +13,9 @@ import re
 import pygame  # Import pygame for controller support
 
 from PyQt5 import QtCore, QtWidgets
+from PyQt5.QtCore import QTimer
 
-from . import __about__
+from . import __about__, proxy_config
 from . import pluto_control_ui
 from . import control_config
 from . import proginit as pi
@@ -49,18 +50,22 @@ class Window(QtWidgets.QMainWindow, pluto_control_ui.Ui_MainWindow):
         # Initialize PlutoPico
         self.pluto_pico = pluto_pico.PlutoPico(pi.conf, self.serial_handler)
         self.control_config_window = control_config.ControlConfigWindow()
+        self.proxy_config_window = proxy_config.ProxyConfigWindow()
         pi.logger.debug("Setup UI")
         self.tE_pluto_control_version.setText("pluto-control version: " + __about__.__version__)
         self.pB_Connect.clicked.connect(self.connect_and_fetch_version)
         self.pB_Disconnect.clicked.connect(self.disconnect_serial_connection)
         self.pB_SaveConfig.clicked.connect(self.save_config)
-        self.pB_Control_Config.clicked.connect(self.open_config_window)
-        self.pB_KeyboardEnable.clicked.connect(self.enable_keyboard_control)  # Connect enable keyboard control button
+        self.pB_Control_Config.clicked.connect(self.open_control_config_window)
+        self.pB_ProxySensorConfig.clicked.connect(self.open_proxy_config_window)
+        self.pB_KeyboardEnable.clicked.connect(self.enable_keyboard_control)
         self.pB_KeyboardDisable.clicked.connect(self.disable_keyboard_control)
-        self.pB_ControllerEnable.clicked.connect(self.enable_controller_control)  # Connect enable controller control button
+        self.pB_ControllerEnable.clicked.connect(self.enable_controller_control)
         self.pB_ControllerDisable.clicked.connect(self.disable_controller_control)
         self.populate_devices()
         self.connected_to_pluto_pico = False
+        self.timer = QTimer(self)
+
 
         # Initialize Pygame for controller support
         pygame.init()
@@ -120,7 +125,6 @@ class Window(QtWidgets.QMainWindow, pluto_control_ui.Ui_MainWindow):
                 self.pB_Disconnect.setEnabled(True)
                 time.sleep(1)
                 self.serial_handler.write(b"shell echo off\n")
-                self.serial_handler.write(b"shell prompt off\n")
                 self.serial_handler.flush_echoed_command()
                 self.serial_handler.write(b"version\n")
                 response = self.serial_handler.read()
@@ -136,9 +140,12 @@ class Window(QtWidgets.QMainWindow, pluto_control_ui.Ui_MainWindow):
         else:
             self.tE_pluto_pico_version.setText("Select a valid USB port.")
 
-    def open_config_window(self):
+    def open_control_config_window(self):
         """Open the additional configuration window."""
         self.control_config_window.show()
+
+    def open_proxy_config_window(self):
+        self.proxy_config_window.show()
 
     def enable_ui_elements_of_pico(self):
         pi.logger.debug("Enabling other UI elements")
@@ -146,8 +153,14 @@ class Window(QtWidgets.QMainWindow, pluto_control_ui.Ui_MainWindow):
             self.pB_Control_Config.setEnabled(True)
             self.pB_KeyboardEnable.setEnabled(True)
             self.pB_ControllerEnable.setEnabled(True)
+            self.pB_ProxySensorConfig.setEnabled(True)
+            self.timer.timeout.connect(self.update_distance_sensor)
+            self.timer.start(3000)  # Call update_distance_sensor every 500 ms
         else:
+            self.timer.stop()
+            self.timer.timeout.disconnect(self.update_distance_sensor())
             self.pB_Control_Config.setEnabled(False)
+            self.pB_ProxySensorConfig.setEnabled(False)
 
     def save_config(self):
         pi.logger.debug("Saving Configuration")
@@ -243,6 +256,10 @@ class Window(QtWidgets.QMainWindow, pluto_control_ui.Ui_MainWindow):
                 return True
         return super().eventFilter(obj, event)
 
+    def update_distance_sensor(self):
+        """Update the distance sensor readings."""
+        distance = self.pluto_pico.get_distance_sensor()
+        self.tE_prox_sensor_2_distance.setText(distance + " mm")
 
 def create_window():
     """

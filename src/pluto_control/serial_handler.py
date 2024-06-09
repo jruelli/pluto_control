@@ -77,11 +77,27 @@ class SerialHandler:
         response = ""
         if self.serial_connection:
             try:
-                response = self.serial_connection.read_until(b'\n').decode('utf-8', 'ignore').strip()
+                response = self.serial_connection.read_until(b'$').decode('utf-8', 'ignore').strip()
                 response = self.remove_ansi_escape_sequences(response)
+                response = self.remove_prompt(response)
                 self.log_callback(response, "receive")
             except serial.SerialTimeoutException as e:
                 self.log_callback(f"Timeout while reading from serial: {e}", "receive")
+        return response
+
+    def remove_prompt(self, response):
+        """
+        Remove the 'uart:~$' prompt from the response string.
+
+        Args:
+            response (str): The response string to process.
+
+        Returns:
+            str: The processed response without the prompt.
+        """
+        prompt = "uart:~$"
+        if response.endswith(prompt):
+            response = response[:-len(prompt)].strip()
         return response
 
     def flush_echoed_command(self):

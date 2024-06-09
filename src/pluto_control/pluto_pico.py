@@ -6,6 +6,8 @@ __author__ = "Jannis Ruellmann"
 __copyright__ = "Copyright (C) 2024 Jannis Ruellmann"
 __license__ = "MIT"
 
+import time
+
 import proginit as pi
 
 
@@ -14,6 +16,7 @@ class PlutoPico:
         self.config = config_file
         self.serial_handler = existing_serial_handler
         self.motors = []
+        self.sensors = []
         self.hand_brake = True
         self.keyboard_control_enabled = False
         self.controller_control_enabled = False
@@ -21,12 +24,19 @@ class PlutoPico:
         self.relay_state = 0
         self.key_mappings = self.load_key_mappings()
         self.initialize_motors()
+        self.initialize_sensors()
 
     def initialize_motors(self):
         for motor_number in range(1, 3):
             motor_config = self.load_motor_config(motor_number)
             motor = self.Motor(motor_number, motor_config, self.send_command, self.receive_command)
             self.motors.append(motor)
+
+    def initialize_sensors(self):
+        for sensor_number in range(4):
+            sensor_config = self.load_sensor_config(sensor_number)
+            sensor = self.Sensor(sensor_number, sensor_config, self.send_command, self.receive_command)
+            self.sensors.append(sensor)
 
     def load_motor_config(self, motor_number):
         section = f'MOTOR_{motor_number}_CONFIG'
@@ -37,6 +47,13 @@ class PlutoPico:
             'brake_rate': self.config.getint(section, 'brake_step_size', fallback=100),
             'accel_delay': self.config.getint(section, 'accel_step_delay', fallback=1),
             'brake_delay': self.config.getint(section, 'brake_step_delay', fallback=1),
+        }
+
+    def load_sensor_config(self, sensor_number):
+        section = f'PROXIMITY_SENSOR_{sensor_number}'
+        return {
+            'mode': self.config.get(section, 'mode', fallback='OFF'),
+            'threshold': self.config.getint(section, 'threshold', fallback=100)
         }
 
     def load_key_mappings(self):
@@ -54,7 +71,8 @@ class PlutoPico:
     def send_command(self, command):
         command_with_newline = command + "\n"
         self.serial_handler.write(command_with_newline.encode('utf-8'))
-        self.receive_command()
+        response = self.receive_command()
+        return response
 
     def receive_command(self):
         response = self.serial_handler.read()
@@ -67,6 +85,8 @@ class PlutoPico:
     def initialize(self):
         for motor in self.motors:
             motor.initialize()
+        for sensor in self.sensors:
+            sensor.initialize()
 
     def set_handbrake(self, state):
         self.hand_brake = state
@@ -214,6 +234,15 @@ class PlutoPico:
     def relay_7(self):
         self.toggle_relay(7)
 
+    def get_distance_sensor(self):
+        """Update the distance sensor readings."""
+        distances = []
+        #for sensor in self.sensors:
+        #    distance = sensor.get_distance()
+        #    distances.append(distance)
+        # return distances
+        return self.sensors[2].get_distance()
+
     class Motor:
         def __init__(self, motor_number, config, send_command_func, receive_command_func):
             self.motor_number = motor_number
@@ -247,3 +276,30 @@ class PlutoPico:
             self.set_brake_rate(self.config['brake_rate'])
             self.set_accel_delay(self.config['accel_delay'])
             self.set_brake_delay(self.config['brake_delay'])
+
+    class Sensor:
+        def __init__(self, sensor_number, config, send_command_func, receive_command_func):
+            self.sensor_number = sensor_number
+            self.config = config
+            self.send_command = send_command_func
+            self.receive_command = receive_command_func
+
+        def set_mode(self, mode):
+            command = f"proxy set-mode p_{self.sensor_number} {mode[0].lower()}"
+            self.send_command(command)
+
+        def set_threshold(self, threshold):
+            command = f"proxy set-threshold p_{self.sensor_number} {threshold}"
+            self.send_command(command)
+
+        def get_distance(self):
+            command = f"proxy get-dis p_{self.sensor_number}"
+            return self.send_command(command)
+
+        def get_proximity(self):
+            command = f"proxy get-prox-state p_{self.sensor_number}"
+            return self.send_command(command)
+
+        def initialize(self):
+            self.set_mode(self.config['mode'])
+            self.set_threshold(self.config['threshold'])

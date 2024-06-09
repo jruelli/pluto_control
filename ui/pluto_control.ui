@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1214</width>
-    <height>738</height>
+    <width>1631</width>
+    <height>984</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -22,8 +22,8 @@
      <rect>
       <x>10</x>
       <y>0</y>
-      <width>1211</width>
-      <height>691</height>
+      <width>1611</width>
+      <height>941</height>
      </rect>
     </property>
     <property name="currentIndex">
@@ -42,7 +42,7 @@
         <x>10</x>
         <y>390</y>
         <width>421</width>
-        <height>231</height>
+        <height>341</height>
        </rect>
       </property>
       <property name="title">
@@ -57,7 +57,7 @@
          <x>0</x>
          <y>30</y>
          <width>301</width>
-         <height>31</height>
+         <height>41</height>
         </rect>
        </property>
        <property name="readOnly">
@@ -68,20 +68,23 @@
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;Current Distance Proximity_Sensor_0&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;Current Distance P_0&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
        </property>
       </widget>
       <widget class="QTextEdit" name="tE_prox_sensor_0_distance">
        <property name="enabled">
-        <bool>false</bool>
+        <bool>true</bool>
        </property>
        <property name="geometry">
         <rect>
          <x>310</x>
          <y>30</y>
          <width>104</width>
-         <height>31</height>
+         <height>41</height>
         </rect>
+       </property>
+       <property name="readOnly">
+        <bool>true</bool>
        </property>
        <property name="html">
         <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
@@ -101,9 +104,9 @@ p, li { white-space: pre-wrap; }
        <property name="geometry">
         <rect>
          <x>0</x>
-         <y>70</y>
+         <y>80</y>
          <width>301</width>
-         <height>31</height>
+         <height>41</height>
         </rect>
        </property>
        <property name="readOnly">
@@ -114,20 +117,23 @@ p, li { white-space: pre-wrap; }
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;Current Distance Proximity_Sensor_1&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;Current Distance P_1&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
        </property>
       </widget>
       <widget class="QTextEdit" name="tE_prox_sensor_1_distance">
        <property name="enabled">
-        <bool>false</bool>
+        <bool>true</bool>
        </property>
        <property name="geometry">
         <rect>
          <x>310</x>
-         <y>70</y>
+         <y>80</y>
          <width>104</width>
-         <height>31</height>
+         <height>41</height>
         </rect>
+       </property>
+       <property name="readOnly">
+        <bool>true</bool>
        </property>
        <property name="html">
         <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
@@ -142,14 +148,14 @@ p, li { white-space: pre-wrap; }
       </widget>
       <widget class="QTextEdit" name="tE_prox_sensor_2">
        <property name="enabled">
-        <bool>false</bool>
+        <bool>true</bool>
        </property>
        <property name="geometry">
         <rect>
          <x>0</x>
-         <y>110</y>
+         <y>130</y>
          <width>301</width>
-         <height>31</height>
+         <height>41</height>
         </rect>
        </property>
        <property name="readOnly">
@@ -160,20 +166,23 @@ p, li { white-space: pre-wrap; }
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;Current Distance Proximity_Sensor_2&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;Current Distance P_2&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
        </property>
       </widget>
       <widget class="QTextEdit" name="tE_prox_sensor_2_distance">
        <property name="enabled">
-        <bool>false</bool>
+        <bool>true</bool>
        </property>
        <property name="geometry">
         <rect>
          <x>310</x>
-         <y>110</y>
+         <y>130</y>
          <width>104</width>
-         <height>31</height>
+         <height>41</height>
         </rect>
+       </property>
+       <property name="readOnly">
+        <bool>true</bool>
        </property>
        <property name="html">
         <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
@@ -193,9 +202,9 @@ p, li { white-space: pre-wrap; }
        <property name="geometry">
         <rect>
          <x>0</x>
-         <y>150</y>
+         <y>180</y>
          <width>301</width>
-         <height>31</height>
+         <height>41</height>
         </rect>
        </property>
        <property name="readOnly">
@@ -206,20 +215,23 @@ p, li { white-space: pre-wrap; }
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;Current Distance Proximity_Sensor_3&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;Current Distance P_3&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
        </property>
       </widget>
       <widget class="QTextEdit" name="tE_prox_sensor_3_distance">
        <property name="enabled">
-        <bool>false</bool>
+        <bool>true</bool>
        </property>
        <property name="geometry">
         <rect>
          <x>310</x>
-         <y>150</y>
+         <y>180</y>
          <width>104</width>
-         <height>31</height>
+         <height>41</height>
         </rect>
+       </property>
+       <property name="readOnly">
+        <bool>true</bool>
        </property>
        <property name="html">
         <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
@@ -239,9 +251,9 @@ p, li { white-space: pre-wrap; }
        <property name="geometry">
         <rect>
          <x>220</x>
-         <y>190</y>
+         <y>230</y>
          <width>191</width>
-         <height>28</height>
+         <height>41</height>
         </rect>
        </property>
        <property name="text">
@@ -252,10 +264,10 @@ p, li { white-space: pre-wrap; }
      <widget class="QGroupBox" name="gB_TemperatureSensors">
       <property name="geometry">
        <rect>
-        <x>440</x>
-        <y>260</y>
-        <width>351</width>
-        <height>391</height>
+        <x>610</x>
+        <y>270</y>
+        <width>531</width>
+        <height>481</height>
        </rect>
       </property>
       <property name="title">
@@ -269,8 +281,8 @@ p, li { white-space: pre-wrap; }
         <rect>
          <x>0</x>
          <y>40</y>
-         <width>221</width>
-         <height>31</height>
+         <width>281</width>
+         <height>41</height>
         </rect>
        </property>
        <property name="readOnly">
@@ -281,7 +293,7 @@ p, li { white-space: pre-wrap; }
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;Temperature_Sensor_0&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;Temperature_Sensor_0&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
        </property>
       </widget>
       <widget class="QTextEdit" name="tE_temp_sensor_0_temp">
@@ -290,10 +302,10 @@ p, li { white-space: pre-wrap; }
        </property>
        <property name="geometry">
         <rect>
-         <x>230</x>
+         <x>330</x>
          <y>40</y>
          <width>104</width>
-         <height>31</height>
+         <height>41</height>
         </rect>
        </property>
        <property name="html">
@@ -314,9 +326,9 @@ p, li { white-space: pre-wrap; }
        <property name="geometry">
         <rect>
          <x>0</x>
-         <y>80</y>
-         <width>221</width>
-         <height>31</height>
+         <y>90</y>
+         <width>281</width>
+         <height>41</height>
         </rect>
        </property>
        <property name="readOnly">
@@ -327,7 +339,7 @@ p, li { white-space: pre-wrap; }
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;Temperature_Sensor_1&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;Temperature_Sensor_1&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
        </property>
       </widget>
       <widget class="QTextEdit" name="tE_temp_sensor_1_temp">
@@ -336,10 +348,10 @@ p, li { white-space: pre-wrap; }
        </property>
        <property name="geometry">
         <rect>
-         <x>230</x>
-         <y>80</y>
+         <x>330</x>
+         <y>90</y>
          <width>104</width>
-         <height>31</height>
+         <height>41</height>
         </rect>
        </property>
        <property name="html">
@@ -360,9 +372,9 @@ p, li { white-space: pre-wrap; }
        <property name="geometry">
         <rect>
          <x>0</x>
-         <y>120</y>
-         <width>221</width>
-         <height>31</height>
+         <y>140</y>
+         <width>281</width>
+         <height>41</height>
         </rect>
        </property>
        <property name="readOnly">
@@ -373,7 +385,7 @@ p, li { white-space: pre-wrap; }
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;Temperature_Sensor_2&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;Temperature_Sensor_2&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
        </property>
       </widget>
       <widget class="QTextEdit" name="tE_temp_sensor_2_temp">
@@ -382,10 +394,10 @@ p, li { white-space: pre-wrap; }
        </property>
        <property name="geometry">
         <rect>
-         <x>230</x>
-         <y>120</y>
+         <x>330</x>
+         <y>140</y>
          <width>104</width>
-         <height>31</height>
+         <height>41</height>
         </rect>
        </property>
        <property name="html">
@@ -406,9 +418,9 @@ p, li { white-space: pre-wrap; }
        <property name="geometry">
         <rect>
          <x>0</x>
-         <y>160</y>
-         <width>221</width>
-         <height>31</height>
+         <y>190</y>
+         <width>281</width>
+         <height>41</height>
         </rect>
        </property>
        <property name="readOnly">
@@ -419,7 +431,7 @@ p, li { white-space: pre-wrap; }
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;Temperature_Sensor_3&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;Temperature_Sensor_3&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
        </property>
       </widget>
       <widget class="QTextEdit" name="tE_temp_sensor_3_temp">
@@ -428,10 +440,10 @@ p, li { white-space: pre-wrap; }
        </property>
        <property name="geometry">
         <rect>
-         <x>230</x>
-         <y>160</y>
+         <x>330</x>
+         <y>190</y>
          <width>104</width>
-         <height>31</height>
+         <height>41</height>
         </rect>
        </property>
        <property name="html">
@@ -452,9 +464,9 @@ p, li { white-space: pre-wrap; }
        <property name="geometry">
         <rect>
          <x>0</x>
-         <y>320</y>
-         <width>221</width>
-         <height>31</height>
+         <y>390</y>
+         <width>281</width>
+         <height>41</height>
         </rect>
        </property>
        <property name="readOnly">
@@ -465,7 +477,7 @@ p, li { white-space: pre-wrap; }
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;Temperature_Sensor_7&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;Temperature_Sensor_7&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
        </property>
       </widget>
       <widget class="QTextEdit" name="tE_temp_sensor_7_temp">
@@ -474,10 +486,10 @@ p, li { white-space: pre-wrap; }
        </property>
        <property name="geometry">
         <rect>
-         <x>230</x>
-         <y>320</y>
+         <x>330</x>
+         <y>390</y>
          <width>104</width>
-         <height>31</height>
+         <height>41</height>
         </rect>
        </property>
        <property name="html">
@@ -498,9 +510,9 @@ p, li { white-space: pre-wrap; }
        <property name="geometry">
         <rect>
          <x>0</x>
-         <y>280</y>
-         <width>221</width>
-         <height>31</height>
+         <y>340</y>
+         <width>281</width>
+         <height>41</height>
         </rect>
        </property>
        <property name="readOnly">
@@ -511,7 +523,7 @@ p, li { white-space: pre-wrap; }
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;Temperature_Sensor_6&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;Temperature_Sensor_6&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
        </property>
       </widget>
       <widget class="QTextEdit" name="tE_temp_sensor_6_temp">
@@ -520,10 +532,10 @@ p, li { white-space: pre-wrap; }
        </property>
        <property name="geometry">
         <rect>
-         <x>230</x>
-         <y>280</y>
+         <x>330</x>
+         <y>340</y>
          <width>104</width>
-         <height>31</height>
+         <height>41</height>
         </rect>
        </property>
        <property name="html">
@@ -544,9 +556,9 @@ p, li { white-space: pre-wrap; }
        <property name="geometry">
         <rect>
          <x>0</x>
-         <y>200</y>
-         <width>221</width>
-         <height>31</height>
+         <y>240</y>
+         <width>281</width>
+         <height>41</height>
         </rect>
        </property>
        <property name="readOnly">
@@ -557,7 +569,7 @@ p, li { white-space: pre-wrap; }
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;Temperature_Sensor_4&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;Temperature_Sensor_4&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
        </property>
       </widget>
       <widget class="QTextEdit" name="tE_temp_sensor_4_temp">
@@ -566,10 +578,10 @@ p, li { white-space: pre-wrap; }
        </property>
        <property name="geometry">
         <rect>
-         <x>230</x>
-         <y>200</y>
+         <x>330</x>
+         <y>240</y>
          <width>104</width>
-         <height>31</height>
+         <height>41</height>
         </rect>
        </property>
        <property name="html">
@@ -590,9 +602,9 @@ p, li { white-space: pre-wrap; }
        <property name="geometry">
         <rect>
          <x>0</x>
-         <y>240</y>
-         <width>221</width>
-         <height>31</height>
+         <y>290</y>
+         <width>281</width>
+         <height>41</height>
         </rect>
        </property>
        <property name="readOnly">
@@ -603,7 +615,7 @@ p, li { white-space: pre-wrap; }
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;Temperature_Sensor_5&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;Temperature_Sensor_5&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
        </property>
       </widget>
       <widget class="QTextEdit" name="tE_temp_sensor_5_temp">
@@ -612,10 +624,10 @@ p, li { white-space: pre-wrap; }
        </property>
        <property name="geometry">
         <rect>
-         <x>230</x>
-         <y>240</y>
+         <x>330</x>
+         <y>290</y>
          <width>104</width>
-         <height>31</height>
+         <height>41</height>
         </rect>
        </property>
        <property name="html">
@@ -636,7 +648,7 @@ p, li { white-space: pre-wrap; }
        <property name="geometry">
         <rect>
          <x>140</x>
-         <y>360</y>
+         <y>440</y>
          <width>191</width>
          <height>28</height>
         </rect>
@@ -767,10 +779,10 @@ p, li { white-space: pre-wrap; }
      <widget class="QGroupBox" name="gB_Motors">
       <property name="geometry">
        <rect>
-        <x>480</x>
+        <x>650</x>
         <y>30</y>
-        <width>331</width>
-        <height>121</height>
+        <width>421</width>
+        <height>141</height>
        </rect>
       </property>
       <property name="title">
@@ -784,8 +796,8 @@ p, li { white-space: pre-wrap; }
         <rect>
          <x>10</x>
          <y>30</y>
-         <width>201</width>
-         <height>31</height>
+         <width>251</width>
+         <height>41</height>
         </rect>
        </property>
        <property name="readOnly">
@@ -796,7 +808,7 @@ p, li { white-space: pre-wrap; }
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;Current Speed Motor_1&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;Current Speed Motor_1&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
        </property>
       </widget>
       <widget class="QTextEdit" name="tE_motor_1_speed">
@@ -805,10 +817,10 @@ p, li { white-space: pre-wrap; }
        </property>
        <property name="geometry">
         <rect>
-         <x>220</x>
+         <x>280</x>
          <y>30</y>
-         <width>104</width>
-         <height>31</height>
+         <width>131</width>
+         <height>41</height>
         </rect>
        </property>
        <property name="html">
@@ -829,9 +841,9 @@ p, li { white-space: pre-wrap; }
        <property name="geometry">
         <rect>
          <x>10</x>
-         <y>70</y>
-         <width>201</width>
-         <height>31</height>
+         <y>80</y>
+         <width>251</width>
+         <height>41</height>
         </rect>
        </property>
        <property name="readOnly">
@@ -842,7 +854,7 @@ p, li { white-space: pre-wrap; }
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;Current Speed Motor_2&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;Current Speed Motor_2&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
        </property>
       </widget>
       <widget class="QTextEdit" name="tE_motor_2_speed">
@@ -851,10 +863,10 @@ p, li { white-space: pre-wrap; }
        </property>
        <property name="geometry">
         <rect>
-         <x>220</x>
-         <y>70</y>
-         <width>104</width>
-         <height>31</height>
+         <x>280</x>
+         <y>80</y>
+         <width>131</width>
+         <height>41</height>
         </rect>
        </property>
        <property name="html">
@@ -872,10 +884,10 @@ p, li { white-space: pre-wrap; }
      <widget class="QGroupBox" name="gB_EmergencySwitch">
       <property name="geometry">
        <rect>
-        <x>480</x>
-        <y>190</y>
-        <width>331</width>
-        <height>71</height>
+        <x>650</x>
+        <y>180</y>
+        <width>401</width>
+        <height>81</height>
        </rect>
       </property>
       <property name="title">
@@ -889,8 +901,8 @@ p, li { white-space: pre-wrap; }
         <rect>
          <x>10</x>
          <y>30</y>
-         <width>201</width>
-         <height>31</height>
+         <width>231</width>
+         <height>41</height>
         </rect>
        </property>
        <property name="readOnly">
@@ -901,7 +913,7 @@ p, li { white-space: pre-wrap; }
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;Status&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;Status&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
        </property>
       </widget>
       <widget class="QTextEdit" name="tE_status_info">
@@ -910,10 +922,10 @@ p, li { white-space: pre-wrap; }
        </property>
        <property name="geometry">
         <rect>
-         <x>220</x>
+         <x>250</x>
          <y>30</y>
-         <width>104</width>
-         <height>31</height>
+         <width>141</width>
+         <height>41</height>
         </rect>
        </property>
        <property name="html">
@@ -931,9 +943,9 @@ p, li { white-space: pre-wrap; }
      <widget class="QGroupBox" name="gB_Control">
       <property name="geometry">
        <rect>
-        <x>300</x>
+        <x>340</x>
         <y>30</y>
-        <width>171</width>
+        <width>221</width>
         <height>81</height>
        </rect>
       </property>
@@ -948,7 +960,7 @@ p, li { white-space: pre-wrap; }
         <rect>
          <x>10</x>
          <y>40</y>
-         <width>151</width>
+         <width>181</width>
          <height>28</height>
         </rect>
        </property>
@@ -963,10 +975,10 @@ p, li { white-space: pre-wrap; }
      <widget class="QGroupBox" name="groupBox_28">
       <property name="geometry">
        <rect>
-        <x>300</x>
-        <y>110</y>
-        <width>171</width>
-        <height>151</height>
+        <x>320</x>
+        <y>130</y>
+        <width>261</width>
+        <height>181</height>
        </rect>
       </property>
       <property name="title">
@@ -980,8 +992,8 @@ p, li { white-space: pre-wrap; }
         <rect>
          <x>0</x>
          <y>30</y>
-         <width>61</width>
-         <height>31</height>
+         <width>101</width>
+         <height>41</height>
         </rect>
        </property>
        <property name="readOnly">
@@ -992,7 +1004,7 @@ p, li { white-space: pre-wrap; }
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;Cell 1&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;Cell 1&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
        </property>
       </widget>
       <widget class="QTextEdit" name="tE_cell_1_voltage">
@@ -1001,10 +1013,10 @@ p, li { white-space: pre-wrap; }
        </property>
        <property name="geometry">
         <rect>
-         <x>70</x>
+         <x>150</x>
          <y>30</y>
-         <width>71</width>
-         <height>31</height>
+         <width>101</width>
+         <height>41</height>
         </rect>
        </property>
        <property name="html">
@@ -1012,7 +1024,7 @@ p, li { white-space: pre-wrap; }
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:12pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+&lt;p align=&quot;center&quot; style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:12pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
        </property>
        <property name="placeholderText">
         <string>0 V</string>
@@ -1024,10 +1036,10 @@ p, li { white-space: pre-wrap; }
        </property>
        <property name="geometry">
         <rect>
-         <x>70</x>
-         <y>70</y>
-         <width>71</width>
-         <height>31</height>
+         <x>150</x>
+         <y>80</y>
+         <width>101</width>
+         <height>41</height>
         </rect>
        </property>
        <property name="html">
@@ -1035,7 +1047,7 @@ p, li { white-space: pre-wrap; }
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:12pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+&lt;p align=&quot;center&quot; style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:12pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
        </property>
        <property name="placeholderText">
         <string>0 V</string>
@@ -1048,9 +1060,9 @@ p, li { white-space: pre-wrap; }
        <property name="geometry">
         <rect>
          <x>0</x>
-         <y>70</y>
-         <width>61</width>
-         <height>31</height>
+         <y>80</y>
+         <width>101</width>
+         <height>41</height>
         </rect>
        </property>
        <property name="readOnly">
@@ -1061,7 +1073,7 @@ p, li { white-space: pre-wrap; }
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;Cell 2&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;Cell 2&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
        </property>
       </widget>
       <widget class="QTextEdit" name="tE_cell_3_voltage">
@@ -1070,10 +1082,10 @@ p, li { white-space: pre-wrap; }
        </property>
        <property name="geometry">
         <rect>
-         <x>70</x>
-         <y>110</y>
-         <width>71</width>
-         <height>31</height>
+         <x>150</x>
+         <y>130</y>
+         <width>101</width>
+         <height>41</height>
         </rect>
        </property>
        <property name="html">
@@ -1094,9 +1106,9 @@ p, li { white-space: pre-wrap; }
        <property name="geometry">
         <rect>
          <x>0</x>
-         <y>110</y>
-         <width>61</width>
-         <height>31</height>
+         <y>130</y>
+         <width>101</width>
+         <height>41</height>
         </rect>
        </property>
        <property name="readOnly">
@@ -1107,7 +1119,7 @@ p, li { white-space: pre-wrap; }
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;Cell 3&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;Cell 3&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
        </property>
       </widget>
      </widget>
@@ -1116,8 +1128,8 @@ p, li { white-space: pre-wrap; }
        <rect>
         <x>10</x>
         <y>30</y>
-        <width>281</width>
-        <height>111</height>
+        <width>301</width>
+        <height>131</height>
        </rect>
       </property>
       <property name="title">
@@ -1128,7 +1140,7 @@ p, li { white-space: pre-wrap; }
         <rect>
          <x>10</x>
          <y>30</y>
-         <width>261</width>
+         <width>271</width>
          <height>31</height>
         </rect>
        </property>
@@ -1137,7 +1149,7 @@ p, li { white-space: pre-wrap; }
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;pluto-control version: V0.1.0&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;pluto-control version: V0.1.0&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
        </property>
        <property name="placeholderText">
         <string/>
@@ -1166,7 +1178,7 @@ p, li { white-space: pre-wrap; }
      <widget class="QGroupBox" name="gB_pluto_control_version_2">
       <property name="geometry">
        <rect>
-        <x>820</x>
+        <x>1250</x>
         <y>30</y>
         <width>351</width>
         <height>561</height>
@@ -1205,8 +1217,8 @@ p, li { white-space: pre-wrap; }
       </property>
       <property name="geometry">
        <rect>
-        <x>990</x>
-        <y>590</y>
+        <x>1420</x>
+        <y>610</y>
         <width>181</width>
         <height>28</height>
        </rect>
@@ -1224,8 +1236,8 @@ p, li { white-space: pre-wrap; }
       </property>
       <property name="geometry">
        <rect>
-        <x>990</x>
-        <y>620</y>
+        <x>1420</x>
+        <y>640</y>
         <width>181</width>
         <height>28</height>
        </rect>
@@ -1243,8 +1255,8 @@ p, li { white-space: pre-wrap; }
       </property>
       <property name="geometry">
        <rect>
-        <x>820</x>
-        <y>590</y>
+        <x>1250</x>
+        <y>610</y>
         <width>161</width>
         <height>28</height>
        </rect>
@@ -1262,8 +1274,8 @@ p, li { white-space: pre-wrap; }
       </property>
       <property name="geometry">
        <rect>
-        <x>820</x>
-        <y>620</y>
+        <x>1250</x>
+        <y>640</y>
         <width>161</width>
         <height>28</height>
        </rect>
@@ -1308,7 +1320,7 @@ p, li { white-space: pre-wrap; }
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1214</width>
+     <width>1631</width>
      <height>22</height>
     </rect>
    </property>
