@@ -62,10 +62,10 @@ class Window(QtWidgets.QMainWindow, pluto_control_ui.Ui_MainWindow):
         self.pB_KeyboardDisable.clicked.connect(self.disable_keyboard_control)
         self.pB_ControllerEnable.clicked.connect(self.enable_controller_control)
         self.pB_ControllerDisable.clicked.connect(self.disable_controller_control)
+        self.pB_orderConfirmed.clicked.connect(self.order_confirmed_clicked)
         self.populate_devices()
         self.connected_to_pluto_pico = False
         self.timer = QTimer(self)
-
 
         # Initialize Pygame for controller support
         pygame.init()
@@ -213,6 +213,10 @@ class Window(QtWidgets.QMainWindow, pluto_control_ui.Ui_MainWindow):
         self.timer.stop()
         pi.logger.debug("Controller control disabled")
 
+    def order_confirmed_clicked(self):
+        pi.logger.debug("Order Conformed Button clicked")
+        self.pB_orderConfirmed.setChecked(False)
+
     def poll_controller(self):
         pygame.event.pump()
         if self.pluto_pico.get_controller_control():
@@ -258,8 +262,8 @@ class Window(QtWidgets.QMainWindow, pluto_control_ui.Ui_MainWindow):
 
     def update_distance_sensor(self):
         """Update the distance sensor readings."""
-        distance = self.pluto_pico.get_distance_sensor()
-        self.tE_prox_sensor_2_distance.setText(distance + " mm")
+        #distance = self.pluto_pico.get_distance_sensor()
+        #self.tE_prox_sensor_2_distance.setText(distance + " mm")
 
 def create_window():
     """

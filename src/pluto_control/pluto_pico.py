@@ -207,7 +207,7 @@ class PlutoPico:
     def toggle_relay(self, relay_number):
         pi.logger.debug(f"Toggling relay: {relay_number}")
         self.relay_state ^= (1 << relay_number)
-        command = f"relays --set-bytes {self.relay_state}"
+        command = f"relays set-relays {self.relay_state}"
         self.send_command(command)
 
     def relay_0(self):
