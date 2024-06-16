@@ -21,8 +21,7 @@ from . import control_config
 from . import proginit as pi
 from . import usb_device_manager
 from . import serial_handler
-from . import pluto_pico
-
+from pluto_pico import PlutoPico
 
 def extract_version_number(version_string):
     # This function assumes the version string format "App Version: x.y.z-unstable"
@@ -48,7 +47,7 @@ class Window(QtWidgets.QMainWindow, pluto_control_ui.Ui_MainWindow):
         self.setupUi(self)
         self.serial_handler = serial_handler.SerialHandler(self.log_pico_communication)
         # Initialize PlutoPico
-        self.pluto_pico = pluto_pico.PlutoPico(pi.conf, self.serial_handler)
+        self.pluto_pico = PlutoPico(pi.conf, self.serial_handler)
         self.control_config_window = control_config.ControlConfigWindow()
         self.proxy_config_window = proxy_config.ProxyConfigWindow()
         pi.logger.debug("Setup UI")
@@ -131,7 +130,6 @@ class Window(QtWidgets.QMainWindow, pluto_control_ui.Ui_MainWindow):
                 self.tE_pluto_pico_version.setText(response)
                 self.connected_to_pluto_pico = True
                 self.enable_ui_elements_of_pico()
-                self.pluto_pico = pluto_pico.PlutoPico(pi.conf, self.serial_handler)
                 self.pluto_pico.initialize()
             else:
                 self.pB_Connect.setEnabled(True)

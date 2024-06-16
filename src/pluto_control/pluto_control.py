@@ -8,11 +8,14 @@ from . import proginit as pi
 from . import __about__
 from . import ui_interface
 import sys
+import os
 
 
 def main() -> int:
     """Entry point for pluto_control."""
     pi.logger.info("Version: " + __about__.__version__)
+    # Ensure the parent directory is in the sys.path
+    sys.path.append(os.path.dirname(os.path.abspath(__file__)))
     if pi.pargs.gui:
         # Run the main application of this package
         pi.logger.info("Application will run in Windowed mode")
