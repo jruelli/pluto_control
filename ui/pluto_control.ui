@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>961</width>
-    <height>641</height>
+    <height>695</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -96,7 +96,7 @@ p, li { white-space: pre-wrap; }
     </property>
     <widget class="QTextEdit" name="tE_temp_sensor_0_temp">
      <property name="enabled">
-      <bool>false</bool>
+      <bool>true</bool>
      </property>
      <property name="geometry">
       <rect>
@@ -119,7 +119,7 @@ p, li { white-space: pre-wrap; }
     </widget>
     <widget class="QTextEdit" name="tE_temp_sensor_1">
      <property name="enabled">
-      <bool>false</bool>
+      <bool>true</bool>
      </property>
      <property name="geometry">
       <rect>
@@ -142,7 +142,7 @@ p, li { white-space: pre-wrap; }
     </widget>
     <widget class="QTextEdit" name="tE_temp_sensor_1_temp">
      <property name="enabled">
-      <bool>false</bool>
+      <bool>true</bool>
      </property>
      <property name="geometry">
       <rect>
@@ -165,7 +165,7 @@ p, li { white-space: pre-wrap; }
     </widget>
     <widget class="QTextEdit" name="tE_temp_sensor_2">
      <property name="enabled">
-      <bool>false</bool>
+      <bool>true</bool>
      </property>
      <property name="geometry">
       <rect>
@@ -188,7 +188,7 @@ p, li { white-space: pre-wrap; }
     </widget>
     <widget class="QTextEdit" name="tE_temp_sensor_2_temp">
      <property name="enabled">
-      <bool>false</bool>
+      <bool>true</bool>
      </property>
      <property name="geometry">
       <rect>
@@ -227,7 +227,7 @@ p, li { white-space: pre-wrap; }
     </widget>
     <widget class="QTextEdit" name="tE_temp_sensor_0">
      <property name="enabled">
-      <bool>false</bool>
+      <bool>true</bool>
      </property>
      <property name="geometry">
       <rect>
@@ -407,7 +407,7 @@ p, li { white-space: pre-wrap; }
     </property>
     <widget class="QTextEdit" name="tE_motor_1">
      <property name="enabled">
-      <bool>false</bool>
+      <bool>true</bool>
      </property>
      <property name="geometry">
       <rect>
@@ -430,7 +430,7 @@ p, li { white-space: pre-wrap; }
     </widget>
     <widget class="QTextEdit" name="tE_motor_1_speed">
      <property name="enabled">
-      <bool>false</bool>
+      <bool>true</bool>
      </property>
      <property name="geometry">
       <rect>
@@ -453,7 +453,7 @@ p, li { white-space: pre-wrap; }
     </widget>
     <widget class="QTextEdit" name="tE_motor_2">
      <property name="enabled">
-      <bool>false</bool>
+      <bool>true</bool>
      </property>
      <property name="geometry">
       <rect>
@@ -476,7 +476,7 @@ p, li { white-space: pre-wrap; }
     </widget>
     <widget class="QTextEdit" name="tE_motor_2_speed">
      <property name="enabled">
-      <bool>false</bool>
+      <bool>true</bool>
      </property>
      <property name="geometry">
       <rect>
@@ -523,7 +523,7 @@ p, li { white-space: pre-wrap; }
       <x>390</x>
       <y>520</y>
       <width>281</width>
-      <height>71</height>
+      <height>111</height>
      </rect>
     </property>
     <property name="title">
@@ -531,7 +531,7 @@ p, li { white-space: pre-wrap; }
     </property>
     <widget class="QTextEdit" name="tE_status">
      <property name="enabled">
-      <bool>false</bool>
+      <bool>true</bool>
      </property>
      <property name="geometry">
       <rect>
@@ -554,7 +554,7 @@ p, li { white-space: pre-wrap; }
     </widget>
     <widget class="QTextEdit" name="tE_status_info">
      <property name="enabled">
-      <bool>false</bool>
+      <bool>true</bool>
      </property>
      <property name="geometry">
       <rect>
@@ -573,6 +573,22 @@ p, li { white-space: pre-wrap; }
      </property>
      <property name="placeholderText">
       <string>OK / ERROR</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="pB_EmSwitchConfig">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
+     <property name="geometry">
+      <rect>
+       <x>170</x>
+       <y>70</y>
+       <width>101</width>
+       <height>28</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>⚙️</string>
      </property>
     </widget>
    </widget>
@@ -904,7 +920,7 @@ p, li { white-space: pre-wrap; }
     </property>
     <widget class="QTextEdit" name="tE_cell_1">
      <property name="enabled">
-      <bool>false</bool>
+      <bool>true</bool>
      </property>
      <property name="geometry">
       <rect>
@@ -927,7 +943,7 @@ p, li { white-space: pre-wrap; }
     </widget>
     <widget class="QTextEdit" name="tE_cell_1_voltage">
      <property name="enabled">
-      <bool>false</bool>
+      <bool>true</bool>
      </property>
      <property name="geometry">
       <rect>
@@ -950,7 +966,7 @@ p, li { white-space: pre-wrap; }
     </widget>
     <widget class="QTextEdit" name="tE_cell_2_voltage">
      <property name="enabled">
-      <bool>false</bool>
+      <bool>true</bool>
      </property>
      <property name="geometry">
       <rect>
@@ -973,7 +989,7 @@ p, li { white-space: pre-wrap; }
     </widget>
     <widget class="QTextEdit" name="tE_cell_2">
      <property name="enabled">
-      <bool>false</bool>
+      <bool>true</bool>
      </property>
      <property name="geometry">
       <rect>
@@ -996,7 +1012,7 @@ p, li { white-space: pre-wrap; }
     </widget>
     <widget class="QTextEdit" name="tE_cell_3_voltage">
      <property name="enabled">
-      <bool>false</bool>
+      <bool>true</bool>
      </property>
      <property name="geometry">
       <rect>
@@ -1019,7 +1035,7 @@ p, li { white-space: pre-wrap; }
     </widget>
     <widget class="QTextEdit" name="tE_cell_3">
      <property name="enabled">
-      <bool>false</bool>
+      <bool>true</bool>
      </property>
      <property name="geometry">
       <rect>

@@ -10,7 +10,7 @@ import os
 import sys
 import time
 import re
-import pygame  # Import pygame for controller support
+import pygame
 
 from PyQt5 import QtCore, QtWidgets
 from PyQt5.QtCore import QTimer
@@ -23,9 +23,8 @@ from . import usb_device_manager
 from . import serial_handler
 from pluto_pico import PlutoPico
 
+
 def extract_version_number(version_string):
-    # This function assumes the version string format "App Version: x.y.z-unstable"
-    # Adjust the slicing as needed if the format changes
     match = re.search(r"\d+\.\d+\.\d+", version_string)
     return match.group(0) if match else "Unknown version"
 
@@ -118,7 +117,7 @@ class Window(QtWidgets.QMainWindow, pluto_control_ui.Ui_MainWindow):
     def connect_and_fetch_version(self):
         """Connect to the selected device and fetch its version."""
         selected_device = self.cB_PortNumber.currentText().split(" - ")[0]
-        if (selected_device != "USB Ports"):
+        if selected_device != "USB Ports":
             if self.serial_handler.connect(selected_device):
                 self.pB_Connect.setEnabled(False)
                 self.pB_Disconnect.setEnabled(True)
