@@ -172,7 +172,7 @@ class Window(QtWidgets.QMainWindow, pluto_control_ui.Ui_MainWindow):
         pi.logger.debug(full_message)
 
     def enable_keyboard_control(self):
-        self.pluto_pico.set_keyboard_control(True)
+        self.pluto_pico.control.set_keyboard_control(True)
         self.pB_KeyboardEnable.setChecked(True)
         self.pB_KeyboardDisable.setChecked(False)
         self.pB_KeyboardDisable.setEnabled(True)
@@ -181,8 +181,8 @@ class Window(QtWidgets.QMainWindow, pluto_control_ui.Ui_MainWindow):
         pi.logger.debug("Keyboard control enabled")
 
     def disable_keyboard_control(self):
-        self.pluto_pico.set_keyboard_control(False)
-        self.pluto_pico.set_handbrake(True)
+        self.pluto_pico.control.set_keyboard_control(False)
+        self.pluto_pico.control.set_handbrake(True)
         self.pB_KeyboardEnable.setChecked(False)
         self.pB_KeyboardDisable.setChecked(True)
         self.pB_KeyboardEnable.setEnabled(True)
@@ -192,7 +192,7 @@ class Window(QtWidgets.QMainWindow, pluto_control_ui.Ui_MainWindow):
 
     def enable_controller_control(self):
         if self.joystick:
-            self.pluto_pico.set_controller_control(True)
+            self.pluto_pico.control.set_controller_control(True)
             self.pB_ControllerEnable.setChecked(True)
             self.pB_ControllerDisable.setChecked(False)
             self.pB_ControllerDisable.setEnabled(True)
@@ -201,8 +201,8 @@ class Window(QtWidgets.QMainWindow, pluto_control_ui.Ui_MainWindow):
             pi.logger.debug("Controller control enabled")
 
     def disable_controller_control(self):
-        self.pluto_pico.set_controller_control(False)
-        self.pluto_pico.set_handbrake(True)
+        self.pluto_pico.control.set_controller_control(False)
+        self.pluto_pico.control.set_handbrake(True)
         self.pB_ControllerEnable.setChecked(False)
         self.pB_ControllerDisable.setChecked(True)
         self.pB_ControllerEnable.setEnabled(True)
@@ -216,49 +216,50 @@ class Window(QtWidgets.QMainWindow, pluto_control_ui.Ui_MainWindow):
 
     def poll_controller(self):
         pygame.event.pump()
-        if self.pluto_pico.get_controller_control():
+        if self.pluto_pico.control.get_controller_control():
             axis_0 = self.joystick.get_axis(0)
             axis_1 = self.joystick.get_axis(1)
             for i in range(self.joystick.get_numbuttons()):
                 if self.joystick.get_button(i):
                     pi.logger.debug(f"Button {i} pressed")
             if axis_1 < -0.5:
-                self.pluto_pico.go_forward()
+                self.pluto_pico.control.go_forward()
             elif axis_1 > 0.5:
-                self.pluto_pico.go_back()
+                self.pluto_pico.control.go_back()
             if axis_0 < -0.5:
-                self.pluto_pico.turn_left()
+                self.pluto_pico.control.turn_left()
             elif axis_0 > 0.5:
-                self.pluto_pico.turn_right()
+                self.pluto_pico.control.turn_right()
 
             start_button = self.joystick.get_button(6)  # Default Start button, adjust as needed
             if start_button:
-                self.pluto_pico.set_handbrake(not self.pluto_pico.get_handbrake())
+                self.pluto_pico.control.set_handbrake(not self.pluto_pico.control.get_handbrake())
 
     def eventFilter(self, obj, event):
         if event.type() == QtCore.QEvent.KeyPress:
-            if self.pluto_pico.get_keyboard_control():
+            if self.pluto_pico.control.get_keyboard_control():
                 key = event.text().upper()
-                if key == self.pluto_pico.key_mappings['handbrake']:
-                    self.pluto_pico.set_handbrake(not self.pluto_pico.get_handbrake())
-                elif key == self.pluto_pico.key_mappings['forward']:
-                    self.pluto_pico.go_forward()
-                elif key == self.pluto_pico.key_mappings['back']:
-                    self.pluto_pico.go_back()
-                elif key == self.pluto_pico.key_mappings['left']:
-                    self.pluto_pico.turn_left()
-                elif key == self.pluto_pico.key_mappings['right']:
-                    self.pluto_pico.turn_right()
+                if key == self.pluto_pico.control.key_mappings['handbrake']:
+                    self.pluto_pico.control.set_handbrake(not self.pluto_pico.control.get_handbrake())
+                elif key == self.pluto_pico.control.key_mappings['forward']:
+                    self.pluto_pico.control.go_forward()
+                elif key == self.pluto_pico.control.key_mappings['back']:
+                    self.pluto_pico.control.go_back()
+                elif key == self.pluto_pico.control.key_mappings['left']:
+                    self.pluto_pico.control.turn_left()
+                elif key == self.pluto_pico.control.key_mappings['right']:
+                    self.pluto_pico.control.turn_right()
                 else:
                     for i in range(8):
-                        if key == self.pluto_pico.key_mappings[f'relay_{i}']:
-                            self.pluto_pico.toggle_relay(i)
+                        if key == self.pluto_pico.control.key_mappings[f'relay_{i}']:
+                            self.pluto_pico.relays.toggle_relay(i)
                             break
                 return True
         return super().eventFilter(obj, event)
 
     def update_distance_sensor(self):
         """Update the distance sensor readings."""
+        pass
         #distance = self.pluto_pico.get_distance_sensor()
         #self.tE_prox_sensor_2_distance.setText(distance + " mm")
 

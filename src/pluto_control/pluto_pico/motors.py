@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Motor module for pluto_pico
+Em_Btn module for pluto_pico
 """
 __author__ = "Jannis Ruellmann"
 __copyright__ = "Copyright (C) 2024 Jannis Ruellmann"
@@ -19,6 +19,10 @@ class Motor:
     def set_direction(self, state):
         command = f"motor{self.motor_number} set-dir {state}"
         self.send_command(command)
+
+    def get_speed(self):
+        command = f"motor{self.motor_number} get-speed"
+        return self.send_command(command)
 
     def set_accel_rate(self, value):
         command = f"motor{self.motor_number} config-acc-rate {value}"

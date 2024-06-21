@@ -42,14 +42,14 @@ class ProximityController:
         self.config = config
         self.send_command = send_command_func
         self.receive_command = receive_command_func
-        self.proximities = []
-        self.initialize_proximities()
+        self.proximity = []
+        self.initialize_proximity()
 
-    def initialize_proximities(self):
+    def initialize_proximity(self):
         for sensor_number in range(4):
             sensor_config = self.load_proximity_config(sensor_number)
             proximity = Proximity(sensor_number, sensor_config, self.send_command, self.receive_command)
-            self.proximities.append(proximity)
+            self.proximity.append(proximity)
 
     def load_proximity_config(self, sensor_number):
         section = f'PROXIMITY_SENSOR_{sensor_number}'
@@ -59,13 +59,13 @@ class ProximityController:
         }
 
     def initialize(self):
-        for proximity in self.proximities:
+        for proximity in self.proximity:
             proximity.initialize()
 
     def get_distance_sensor(self):
         """Update the distance sensor readings."""
         distances = []
-        for proximity in self.proximities:
+        for proximity in self.proximity:
             distance = proximity.get_distance()
             distances.append(distance)
         return distances
