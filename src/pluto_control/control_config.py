@@ -50,7 +50,7 @@ class ControlConfigWindow(QtWidgets.QDialog, control_config_ui.Ui_Dialog):
 
     def load_motor_config(self, motor_number):
         """Load the motor configuration from the configuration file and set it in the UI."""
-        pi.logger.debug(f"Loading Motor {motor_number} Configuration")
+        pi.logger.debug(f"Loading Em_Btn {motor_number} Configuration")
         section = f'MOTOR_{motor_number}_CONFIG'
         # Get config values
         max_speed = pi.conf.getint(section, 'max_speed', fallback=1)
