@@ -22,6 +22,7 @@ from . import proginit as pi
 from . import usb_device_manager
 from . import serial_handler
 from pluto_pico import PlutoPico
+from .pluto_app import PlutoApp  # Import the PlutoApp class
 
 
 def extract_version_number(version_string):
@@ -75,6 +76,8 @@ class Window(QtWidgets.QMainWindow, pluto_control_ui.Ui_MainWindow):
         self.timer = QtCore.QTimer()
         self.timer.timeout.connect(self.poll_controller)
 
+        # Initialize PlutoApp for Firestore integration
+        self.pluto_app = PlutoApp("firebase_secret_key.json", self.log_pico_communication)
     def populate_devices(self):
         """Populate the combo box with available USB devices."""
         self.cB_PortNumber.clear()
@@ -166,7 +169,13 @@ class Window(QtWidgets.QMainWindow, pluto_control_ui.Ui_MainWindow):
 
     def log_pico_communication(self, message, direction):
         """Add a message to the terminal text edit and log it with direction."""
-        prefix = "Sent: " if direction == "send" else "Received: "
+        direction_map = {
+            "send": "Sent: ",
+            "received": "Received: ",
+            "firebase-send": "Firebase Sent: ",
+            "firebase-received": "Firebase Received: "
+        }
+        prefix = direction_map.get(direction, "Unknown Direction: ")
         full_message = f"{prefix}{message}"
         self.tE_terminal.append(full_message)
         pi.logger.debug(full_message)
@@ -211,8 +220,68 @@ class Window(QtWidgets.QMainWindow, pluto_control_ui.Ui_MainWindow):
         pi.logger.debug("Controller control disabled")
 
     def order_confirmed_clicked(self):
-        pi.logger.debug("Order Conformed Button clicked")
+        pi.logger.debug("Order Confirmed Button clicked")
+        # Find the document with "processing" status and update it to "order_confirmed"
+        plutito_ref = self.pluto_app.db.collection('plutito')
+        query = plutito_ref.where('ordering_state', '==', 'processing').limit(1)
+        results = query.stream()
+        for doc in results:
+            self.pluto_app.update_delivery_status(doc.id, "Confirmed!")
         self.pB_orderConfirmed.setChecked(False)
+        self.pB_orderConfirmed.setEnabled(False)
+        self.pB_orderDispatched.setEnabled(True)
+
+    def pB_order_dispatched_clicked(self):
+        pi.logger.debug("Order Dispatched Button clicked")
+        # Find the document with "processing" status and update it to "order_confirmed"
+        plutito_ref = self.pluto_app.db.collection('plutito')
+        query = plutito_ref.where('ordering_state', '==',  'Confirmed!').limit(1)
+        results = query.stream()
+        for doc in results:
+            self.pluto_app.update_delivery_status(doc.id, "Dispatched!")
+        self.pB_orderDispatched.setChecked(False)
+        self.pB_orderDispatched.setEnabled(False)
+        self.pB_orderDelivered.setEnabled(True)
+
+    def pB_order_cancelled_clicked(self):
+        pi.logger.debug("Order Cancelled Button clicked")
+        # Find the document with "processing" status and update it to "order_confirmed"
+        plutito_ref = self.pluto_app.db.collection('plutito')
+        query = plutito_ref.where('ordering_state', '==', ['Confirmed!', 'Dispatched!', 'processing']).limit(1)
+        results = query.stream()
+        for doc in results:
+            self.pluto_app.update_delivery_status(doc.id, "Cancelled!")
+        self.pB_orderCancelled.setChecked(False)
+        self.pB_orderConfirmed.setEnabled(True)
+        self.pB_orderDispatched.setEnabled(False)
+        self.pB_orderDelivered.setEnabled(False)
+        self.pB_orderFinished.setEnabled(False)
+
+    def order_delivered_clicked(self):
+        pi.logger.debug("Order Delivered Button clicked")
+        # Find the document with "processing" status and update it to "order_confirmed"
+        plutito_ref = self.pluto_app.db.collection('plutito')
+        query = plutito_ref.where('ordering_state', '==',  'Dispatched!').limit(1)
+        results = query.stream()
+        for doc in results:
+            self.pluto_app.update_delivery_status(doc.id, "Delivered!")
+        self.pB_orderDelivered.setChecked(False)
+        self.pB_orderDelivered.setEnabled(False)
+        self.pB_orderFinished.setEnabled(True)
+
+    def pB_order_finished_clicked(self):
+        pi.logger.debug("Order Fininshed Button clicked")
+        # Find the document with "processing" status and update it to "order_confirmed"
+        plutito_ref = self.pluto_app.db.collection('plutito')
+        query = plutito_ref.where('ordering_state', '==',  'Delivered!').limit(1)
+        results = query.stream()
+        for doc in results:
+            self.pluto_app.update_delivery_status(doc.id, "Finished!")
+        self.pB_orderFinished.setChecked(False)
+        self.pB_orderFinished.setEnabled(False)
+        self.pB_orderConfirmed.setEnabled(True)
+
+
 
     def poll_controller(self):
         pygame.event.pump()
