@@ -62,6 +62,10 @@ class Window(QtWidgets.QMainWindow, pluto_control_ui.Ui_MainWindow):
         self.pB_ControllerEnable.clicked.connect(self.enable_controller_control)
         self.pB_ControllerDisable.clicked.connect(self.disable_controller_control)
         self.pB_orderConfirmed.clicked.connect(self.order_confirmed_clicked)
+        self.pB_orderDelivered.clicked.connect(self.order_delivered_clicked)
+        self.pB_orderDispatched.clicked.connect(self.pB_order_dispatched_clicked)
+        self.pB_orderCancelled.clicked.connect(self.pB_order_cancelled_clicked)
+        self.pB_orderFinished.clicked.connect(self.pB_order_finished_clicked)
         self.populate_devices()
         self.connected_to_pluto_pico = False
         self.timer = QTimer(self)
