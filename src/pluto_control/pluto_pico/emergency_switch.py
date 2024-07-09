@@ -24,4 +24,13 @@ class EmBtn:
         self.send_command(command)
 
     def initialize(self):
-        self.config_mode(1)
+        # Retrieve the safety enabled value from the configuration
+        safety_enabled = self.config.get('EM_BTN_CONFIG', 'safety_enabled', fallback='1')
+        self.config_mode(safety_enabled)
+
+    def load_key_mappings(self):
+        # Load the safety_enabled configuration for EmBtn
+        mappings = {
+            'safety_enabled': self.config.get('EM_BTN_CONFIG', 'safety_enabled', fallback='1'),
+        }
+        return mappings
