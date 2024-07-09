@@ -163,7 +163,7 @@ class Window(QtWidgets.QMainWindow, pluto_control_ui.Ui_MainWindow):
             self.timer.start(3000)
         else:
             self.timer.stop()
-            self.timer.timeout.disconnect(self.update_distance_sensor())
+            self.timer.timeout.disconnect(self.update_distance_sensor)
             self.pB_Control_Config.setEnabled(False)
             self.pB_ProxySensorConfig.setEnabled(False)
 
