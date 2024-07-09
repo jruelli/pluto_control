@@ -77,3 +77,37 @@ class PlutoApp:
                     "last_updated": datetime.now()
                 }
                 self.add_data_to_firestore('plutito', order_id, plutito_data)
+            elif change.type.name == 'REMOVED':
+                order_id = change.document.id
+                print(f"Order deleted: {order_id}")
+
+                # Optionally, handle the removal from the 'plutito' collection if needed
+                self.remove_data_from_firestore('plutito', order_id)
+            elif change.type.name == 'MODIFIED':
+                modified_order = change.document.to_dict()
+                order_id = change.document.id
+                print(f"Order modified: {order_id} - {modified_order}")
+
+                # Handle modifications as needed
+                # For example, update the corresponding document in the 'plutito' collection
+                self.update_data_in_firestore('plutito', order_id, modified_order)
+
+    # Function to remove data from Firestore
+    def remove_data_from_firestore(self, collection_name, document_id):
+        try:
+            doc_ref = self.db.collection(collection_name).document(document_id)
+            doc_ref.delete()
+            self.log_callback(f"Removed from {collection_name} with ID {document_id}", "firebase-send")
+            pi.logger.debug(f"Data removed successfully from {collection_name} with ID {document_id}!")
+        except Exception as e:
+            pi.logger.error("Error removing data from Firestore:", e)
+
+    # Function to update data in Firestore
+    def update_data_in_firestore(self, collection_name, document_id, data):
+        try:
+            doc_ref = self.db.collection(collection_name).document(document_id)
+            doc_ref.update(data)
+            self.log_callback(f"Updated {collection_name} with ID {document_id}", "firebase-send")
+            pi.logger.debug(f"Data updated successfully in {collection_name} with ID {document_id}!")
+        except Exception as e:
+            pi.logger.error("Error updating data in Firestore:", e)
