@@ -22,6 +22,8 @@ class ControlConfigWindow(QtWidgets.QDialog, control_config_ui.Ui_Dialog):
         self.load_relay_keys()
         self.load_motor_config(1)
         self.load_motor_config(2)
+        self.load_temperature_config()
+        self.load_battery_config()
 
         # Connect the save button
         self.buttonBox.accepted.connect(self.save_key_config)
@@ -67,6 +69,31 @@ class ControlConfigWindow(QtWidgets.QDialog, control_config_ui.Ui_Dialog):
         getattr(self, f'sB_Brake_delay_{motor_number}').setValue(brake_step_delay)
         getattr(self, f'cB_dir_{motor_number}').setCurrentIndex(direction)
 
+    def load_temperature_config(self):
+        """Load the temperature configuration from the configuration file and set it in the UI."""
+        pi.logger.debug("Loading Temperature Configuration")
+        for i in range(3):
+            safety_enabled = pi.conf.get('TEMP_CONFIG', f't{i}_safety_enabled', fallback='d')
+            threshold_temp = pi.conf.getfloat('TEMP_CONFIG', f't{i}_threshold_temp', fallback=60 + i)
+            # Translate 'e' to 0 (index for "Enabled") and 'd' to 1 (index for "Disabled")
+            if safety_enabled == 'e':
+                getattr(self, f'cB_temp_func_{i}').setCurrentIndex(0)
+            else:
+                getattr(self, f'cB_temp_func_{i}').setCurrentIndex(1)
+            getattr(self, f'tE_temp_threshold_{i}').setText(str(threshold_temp))
+
+    def load_battery_config(self):
+        pi.logger.debug("Loading Battery Configuration")
+        for i in range(4):
+            safety_enabled = pi.conf.get('BATTERY_CONFIG', f'b{i}_safety_enabled', fallback='d')
+            threshold_temp = pi.conf.getfloat('BATTERY_CONFIG', f'b{i}_threshold_voltage', fallback=0.69 + 0.01)
+            # Translate 'e' to 0 (index for "Enabled") and 'd' to 1 (index for "Disabled")
+            if safety_enabled == 'e':
+                getattr(self, f'cB_bat_func_{i}').setCurrentIndex(0)
+            else:
+                getattr(self, f'cB_bat_func_{i}').setCurrentIndex(1)
+            getattr(self, f'tE_bat_threshold_{i}').setText(str(threshold_temp))
+
     def save_control_keys(self):
         """Save the control keys configuration to the config file."""
         forward_key = self.kSE_forward.keySequence().toString()
@@ -105,11 +132,37 @@ class ControlConfigWindow(QtWidgets.QDialog, control_config_ui.Ui_Dialog):
         pi.conf.set(section, 'brake_step_delay', str(brake_step_delay))
         pi.conf.set(section, 'direction', str(direction))
 
+    def save_temperature_config(self):
+        """Save the temperature configuration to the config file."""
+        for i in range(3):
+            # Translate comboBox index to 'e' or 'd'
+            if getattr(self, f'cB_temp_func_{i}').currentIndex() == 0:
+                safety_enabled = 'e'
+            else:
+                safety_enabled = 'd'
+            threshold_temp = getattr(self, f'tE_temp_threshold_{i}').toPlainText()
+            pi.conf.set('TEMP_CONFIG', f't{i}_safety_enabled', safety_enabled)
+            pi.conf.set('TEMP_CONFIG', f't{i}_threshold_temp', str(threshold_temp))
+
+    def save_battery_config(self):
+        """Save the battery configuration to the config file."""
+        for i in range(4):
+            # Translate comboBox index to 'e' or 'd'
+            if getattr(self, f'cB_bat_func_{i}').currentIndex() == 0:
+                safety_enabled = 'e'
+            else:
+                safety_enabled = 'd'
+            threshold_temp = getattr(self, f'tE_bat_threshold_{i}').toPlainText()
+            pi.conf.set('BATTERY_CONFIG', f'b{i}_safety_enabled', safety_enabled)
+            pi.conf.set('BATTERY_CONFIG', f'b{i}_threshold_voltage', str(threshold_temp))
+
     def save_key_config(self):
         """Save all keys configuration to the config file."""
         self.save_control_keys()
         self.save_relay_keys()
         self.save_motor_config(1)
         self.save_motor_config(2)
+        self.save_temperature_config()
+        self.save_battery_config()
         pi.save_conf()
         pi.logger.debug("Control configuration saved")
