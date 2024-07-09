@@ -12,6 +12,8 @@ from .motors import MotorController
 from .proximity import ProximityController
 from .relays import RelayController
 from .emergency_switch import EmBtn
+from .temperature import Temperature
+from .batteries import Batteries
 from .control import Control
 
 
@@ -23,6 +25,8 @@ class PlutoPico:
         self.proximity = ProximityController(self.config, self.send_command, self.receive_command)
         self.relays = RelayController(self.send_command)
         self.em_btn = EmBtn(self.config, self.send_command, self.receive_command)
+        self.temperature = Temperature(self.config, self.send_command, self.receive_command)
+        self.batteries = Batteries(self.config, self.send_command, self.receive_command)
 
     def send_command(self, command, log_enabled=True):
         command_with_newline = command + "\n"
@@ -37,3 +41,5 @@ class PlutoPico:
     def initialize(self):
         self.proximity.initialize()
         self.em_btn.initialize()
+        self.temperature.initialize()
+        self.batteries.initialize()

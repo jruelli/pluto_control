@@ -93,13 +93,17 @@ class Control:
         if not self.hand_brake:
             if self.current_state == 'forward':
                 pi.logger.debug("turning forward-left")
-                self.motors.set_motors(int(self.motors.motors[0].config['max_speed'] * 0.5), self.motors.motors[0].config['direction'],
-                                       self.motors.motors[1].config['max_speed'], self.motors.motors[1].config['direction'])
+                self.motors.set_motors(int(self.motors.motors[0].config['max_speed'] * 0.5),
+                                       self.motors.motors[0].config['direction'],
+                                       self.motors.motors[1].config['max_speed'],
+                                       self.motors.motors[1].config['direction'])
                 self.current_state = 'forward-left'
             elif self.current_state == 'back':
                 pi.logger.debug("turning back-left")
-                self.motors.set_motors(int(self.motors.motors[0].config['max_speed'] * 0.5), 1 - self.motors.motors[0].config['direction'],
-                                       self.motors.motors[1].config['max_speed'], 1 - self.motors.motors[1].config['direction'])
+                self.motors.set_motors(int(self.motors.motors[0].config['max_speed'] * 0.5),
+                                       1 - self.motors.motors[0].config['direction'],
+                                       self.motors.motors[1].config['max_speed'],
+                                       1 - self.motors.motors[1].config['direction'])
                 self.current_state = 'back-left'
             elif self.current_state == 'back-left' or self.current_state == 'forward-left':
                 pi.logger.debug("maintaining left movement")
@@ -109,30 +113,38 @@ class Control:
                 self.go_forward()
             else:
                 pi.logger.debug("rotate in place left")
-                self.motors.set_motors(int(self.motors.motors[0].config['max_speed'] * 0.5), self.motors.motors[0].config['direction'],
-                                       int(self.motors.motors[1].config['max_speed'] * 0.5), 1 - self.motors.motors[1].config['direction'])
+                self.motors.set_motors(int(self.motors.motors[0].config['max_speed'] * 0.5),
+                                       self.motors.motors[0].config['direction'],
+                                       int(self.motors.motors[1].config['max_speed'] * 0.5),
+                                       1 - self.motors.motors[1].config['direction'])
                 self.current_state = 'rotate-in-place-left'
 
     def turn_right(self):
         if not self.hand_brake:
             if self.current_state == 'forward':
                 pi.logger.debug("turning forward-right")
-                self.motors.set_motors(self.motors.motors[0].config['max_speed'], self.motors.motors[0].config['direction'],
-                                       int(self.motors.motors[1].config['max_speed'] * 0.5), self.motors.motors[1].config['direction'])
+                self.motors.set_motors(self.motors.motors[0].config['max_speed'],
+                                       self.motors.motors[0].config['direction'],
+                                       int(self.motors.motors[1].config['max_speed'] * 0.5),
+                                       self.motors.motors[1].config['direction'])
                 self.current_state = 'forward-right'
             elif self.current_state == 'back':
                 pi.logger.debug("turning back-right")
-                self.motors.set_motors(self.motors.motors[0].config['max_speed'], 1 - self.motors.motors[0].config['direction'],
-                                       int(self.motors.motors[1].config['max_speed'] * 0.5), 1 - self.motors.motors[1].config['direction'])
+                self.motors.set_motors(self.motors.motors[0].config['max_speed'],
+                                       1 - self.motors.motors[0].config['direction'],
+                                       int(self.motors.motors[1].config['max_speed'] * 0.5),
+                                       1 - self.motors.motors[1].config['direction'])
                 self.current_state = 'back-right'
             elif self.current_state == 'back-right' or self.current_state == 'forward-right':
                 pi.logger.debug("maintaining right movement")
-            elif self.current_state == 'forward-right':
+            elif self.current_state == 'forward-left':
                 self.go_forward()
-            elif self.current_state == 'back-right':
+            elif self.current_state == 'back-left':
                 self.go_back()
             else:
                 pi.logger.debug("rotate in place right")
-                self.motors.set_motors(int(self.motors.motors[0].config['max_speed'] * 0.5), 1 - self.motors.motors[0].config['direction'],
-                                       int(self.motors.motors[1].config['max_speed'] * 0.5), self.motors.motors[1].config['direction'])
+                self.motors.set_motors(int(self.motors.motors[0].config['max_speed'] * 0.5),
+                                       1 - self.motors.motors[0].config['direction'],
+                                       int(self.motors.motors[1].config['max_speed'] * 0.5),
+                                       self.motors.motors[1].config['direction'])
                 self.current_state = 'rotate-in-place-right'

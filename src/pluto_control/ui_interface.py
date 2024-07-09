@@ -56,7 +56,6 @@ class Window(QtWidgets.QMainWindow, pluto_control_ui.Ui_MainWindow):
         self.pB_Disconnect.clicked.connect(self.disconnect_serial_connection)
         self.pB_SaveConfig.clicked.connect(self.save_config)
         self.pB_Control_Config.clicked.connect(self.open_control_config_window)
-        self.pB_ProxySensorConfig.clicked.connect(self.open_proxy_config_window)
         self.pB_KeyboardEnable.clicked.connect(self.enable_keyboard_control)
         self.pB_KeyboardDisable.clicked.connect(self.disable_keyboard_control)
         self.pB_ControllerEnable.clicked.connect(self.enable_controller_control)
@@ -149,22 +148,16 @@ class Window(QtWidgets.QMainWindow, pluto_control_ui.Ui_MainWindow):
         """Open the additional configuration window."""
         self.control_config_window.show()
 
-    def open_proxy_config_window(self):
-        self.proxy_config_window.show()
-
     def enable_ui_elements_of_pico(self):
         pi.logger.debug("Enabling other UI elements")
         if self.connected_to_pluto_pico:
-            self.pB_Control_Config.setEnabled(True)
             self.pB_KeyboardEnable.setEnabled(True)
             self.pB_ControllerEnable.setEnabled(True)
-            self.pB_ProxySensorConfig.setEnabled(True)
-            self.timer.timeout.connect(self.update_distance_sensor)
+            self.timer.timeout.connect(self.update_sensor_values)
             self.timer.start(3000)
         else:
             self.timer.stop()
-            self.timer.timeout.disconnect(self.update_distance_sensor)
-            self.pB_Control_Config.setEnabled(False)
+            self.timer.timeout.disconnect(self.update_sensor_values)
             self.pB_ProxySensorConfig.setEnabled(False)
 
     def save_config(self):
@@ -279,8 +272,6 @@ class Window(QtWidgets.QMainWindow, pluto_control_ui.Ui_MainWindow):
         self.pB_orderFinished.setEnabled(False)
         self.pB_orderConfirmed.setEnabled(True)
 
-
-
     def poll_controller(self):
         pygame.event.pump()
         if self.pluto_pico.control.get_controller_control():
@@ -324,12 +315,30 @@ class Window(QtWidgets.QMainWindow, pluto_control_ui.Ui_MainWindow):
                 return True
         return super().eventFilter(obj, event)
 
-    def update_distance_sensor(self):
+    def update_sensor_values(self):
         """Update the distance sensor readings."""
-        status = self.pluto_pico.em_btn.get_state(False)
-        self.tE_status_info.setText(status)
-        #distance = self.pluto_pico.get_distance_sensor()
-        #self.tE_prox_sensor_2_distance.setText(distance + " mm")
+        # EM-BTN
+        self.tE_status_info.setText(self.pluto_pico.em_btn.get_state(False))
+        # Temperatures
+        self.tE_temp_sensor_0_temp.setText(self.pluto_pico.temperature.get_temperature_t0(False) + " °C")
+        self.tE_temp_sensor_1_temp.setText(self.pluto_pico.temperature.get_temperature_t1(False) + " °C")
+        self.tE_temp_sensor_2_temp.setText(self.pluto_pico.temperature.get_temperature_t2(False) + " °C")
+        # Motors
+        motors_speed = self.pluto_pico.control.motors.get_motors_speed_with_direction(False)
+        self.tE_motor_1_speed.setText(motors_speed[0] + " %")
+        self.tE_motor_2_speed.setText(motors_speed[1] + " %")
+        # Proximity
+        distances = self.pluto_pico.proximity.get_distance_sensor(False)
+        self.tE_prox_sensor_0_distance.setText(distances[0] + " mm")
+        self.tE_prox_sensor_1_distance.setText(distances[1] + " mm")
+        self.tE_prox_sensor_2_distance.setText(distances[2] + " mm")
+        self.tE_prox_sensor_3_distance.setText(distances[3] + " mm")
+        # ADS1115
+        self.tE_cell_1_voltage.setText( self.pluto_pico.batteries.get_batteries_b0(False) + " V")
+        self.tE_cell_2_voltage.setText( self.pluto_pico.batteries.get_batteries_b1(False) + " V")
+        self.tE_cell_3_voltage.setText( self.pluto_pico.batteries.get_batteries_b2(False) + " V")
+        self.tE_cell_4_voltage.setText( self.pluto_pico.batteries.get_batteries_b3(False) + " V")
+
 
 def create_window():
     """

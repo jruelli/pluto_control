@@ -17,16 +17,16 @@ class Proximity:
         self.receive_command = receive_command_func
 
     def set_mode(self, mode):
-        command = f"proxy set-mode p_{self.sensor_number} {mode[0].lower()}"
+        command = f"proxy config-mode p_{self.sensor_number} {mode[0].lower()}"
         self.send_command(command)
 
     def set_threshold(self, threshold):
         command = f"proxy set-threshold p_{self.sensor_number} {threshold}"
         self.send_command(command)
 
-    def get_distance(self):
+    def get_distance(self, log_enabled=True):
         command = f"proxy get-dis p_{self.sensor_number}"
-        return self.send_command(command)
+        return self.send_command(command, log_enabled)
 
     def get_proximity(self):
         command = f"proxy get-prox-state p_{self.sensor_number}"
@@ -62,10 +62,10 @@ class ProximityController:
         for proximity in self.proximity:
             proximity.initialize()
 
-    def get_distance_sensor(self):
+    def get_distance_sensor(self, log_enabled=True):
         """Update the distance sensor readings."""
         distances = []
         for proximity in self.proximity:
-            distance = proximity.get_distance()
+            distance = proximity.get_distance(log_enabled)
             distances.append(distance)
         return distances
