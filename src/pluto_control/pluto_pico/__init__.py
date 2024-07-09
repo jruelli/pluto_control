@@ -11,7 +11,7 @@ import proginit as pi
 from .motors import MotorController
 from .proximity import ProximityController
 from .relays import RelayController
-from .emergency_switch import EmBtnController
+from .emergency_switch import EmBtn
 from .control import Control
 
 
@@ -22,16 +22,16 @@ class PlutoPico:
         self.control = Control(self.config, self.send_command, self.receive_command)
         self.proximity = ProximityController(self.config, self.send_command, self.receive_command)
         self.relays = RelayController(self.send_command)
-        self.em_btn = EmBtnController(self.config, self.send_command, self.receive_command)
+        self.em_btn = EmBtn(self.config, self.send_command, self.receive_command)
 
-    def send_command(self, command):
+    def send_command(self, command, log_enabled=True):
         command_with_newline = command + "\n"
-        self.serial_handler.write(command_with_newline.encode('utf-8'))
-        response = self.receive_command()
+        self.serial_handler.write_pluto_pico(command_with_newline.encode('utf-8'), log_enabled)
+        response = self.receive_command(log_enabled)
         return response
 
-    def receive_command(self):
-        response = self.serial_handler.read()
+    def receive_command(self, log_enabled=True):
+        response = self.serial_handler.read_pluto_pico(log_enabled)
         return response
 
     def initialize(self):

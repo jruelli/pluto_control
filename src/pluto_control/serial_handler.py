@@ -12,6 +12,22 @@ import re
 import proginit as pi
 
 
+def remove_prompt(response):
+    """
+    Remove the 'uart:~$' prompt from the response string.
+
+    Args:
+        response (str): The response string to process.
+
+    Returns:
+        str: The processed response without the prompt.
+    """
+    prompt = "uart:~$"
+    if response.endswith(prompt):
+        response = response[:-len(prompt)].strip()
+    return response
+
+
 class SerialHandler:
     def __init__(self, log_callback):
         """
@@ -56,21 +72,24 @@ class SerialHandler:
             finally:
                 self.serial_connection = None
 
-    def write(self, message):
+    def write_pluto_pico(self, message, log_enabled=True):
         """
         Write a message to the serial connection.
 
         Args:
             message (bytes): The message to send.
+            log_enabled (bool): If the messages is being logged in terminal
         """
         if self.serial_connection:
             self.serial_connection.write(message)
-            self.log_callback(message.decode('utf-8').strip(), "send")
+            if log_enabled:
+                self.log_callback(message.decode('utf-8').strip(), "send: ")
 
-    def read(self):
+    def read_pluto_pico(self, log_enabled=True):
         """
         Read a response from the serial connection.
-
+        Args:
+            log_enabled (bool): Whether to log the received message.
         Returns:
             str: The response from the device.
         """
@@ -79,25 +98,12 @@ class SerialHandler:
             try:
                 response = self.serial_connection.read_until(b'$').decode('utf-8', 'ignore').strip()
                 response = self.remove_ansi_escape_sequences(response)
-                response = self.remove_prompt(response)
-                self.log_callback(response, "receive")
+                response = remove_prompt(response)
+                if log_enabled:
+                    self.log_callback(response, "receive: ")
             except serial.SerialTimeoutException as e:
-                self.log_callback(f"Timeout while reading from serial: {e}", "receive")
-        return response
-
-    def remove_prompt(self, response):
-        """
-        Remove the 'uart:~$' prompt from the response string.
-
-        Args:
-            response (str): The response string to process.
-
-        Returns:
-            str: The processed response without the prompt.
-        """
-        prompt = "uart:~$"
-        if response.endswith(prompt):
-            response = response[:-len(prompt)].strip()
+                if log_enabled:
+                    self.log_callback(f"Timeout while reading from serial: {e}", "receive: ")
         return response
 
     def flush_echoed_command(self):

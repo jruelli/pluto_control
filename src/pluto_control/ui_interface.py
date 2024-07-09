@@ -82,6 +82,7 @@ class Window(QtWidgets.QMainWindow, pluto_control_ui.Ui_MainWindow):
 
         # Initialize PlutoApp for Firestore integration
         self.pluto_app = PlutoApp("firebase_secret_key.json", self.log_pico_communication)
+
     def populate_devices(self):
         """Populate the combo box with available USB devices."""
         self.cB_PortNumber.clear()
@@ -129,10 +130,10 @@ class Window(QtWidgets.QMainWindow, pluto_control_ui.Ui_MainWindow):
                 self.pB_Connect.setEnabled(False)
                 self.pB_Disconnect.setEnabled(True)
                 time.sleep(1)
-                self.serial_handler.write(b"shell echo off\n")
+                self.serial_handler.write_pluto_pico(b"shell echo off\n")
                 self.serial_handler.flush_echoed_command()
-                self.serial_handler.write(b"version\n")
-                response = self.serial_handler.read()
+                self.serial_handler.write_pluto_pico(b"version\n")
+                response = self.serial_handler.read_pluto_pico()
                 self.tE_pluto_pico_version.setText(response)
                 self.connected_to_pluto_pico = True
                 self.enable_ui_elements_of_pico()
@@ -159,7 +160,7 @@ class Window(QtWidgets.QMainWindow, pluto_control_ui.Ui_MainWindow):
             self.pB_ControllerEnable.setEnabled(True)
             self.pB_ProxySensorConfig.setEnabled(True)
             self.timer.timeout.connect(self.update_distance_sensor)
-            self.timer.start(3000)  # Call update_distance_sensor every 500 ms
+            self.timer.start(3000)
         else:
             self.timer.stop()
             self.timer.timeout.disconnect(self.update_distance_sensor())
@@ -173,14 +174,7 @@ class Window(QtWidgets.QMainWindow, pluto_control_ui.Ui_MainWindow):
 
     def log_pico_communication(self, message, direction):
         """Add a message to the terminal text edit and log it with direction."""
-        direction_map = {
-            "send": "Sent: ",
-            "received": "Received: ",
-            "firebase-send": "Firebase Sent: ",
-            "firebase-received": "Firebase Received: "
-        }
-        prefix = direction_map.get(direction, "Unknown Direction: ")
-        full_message = f"{prefix}{message}"
+        full_message = f"{direction}{message}"
         self.tE_terminal.append(full_message)
         pi.logger.debug(full_message)
 
@@ -332,7 +326,8 @@ class Window(QtWidgets.QMainWindow, pluto_control_ui.Ui_MainWindow):
 
     def update_distance_sensor(self):
         """Update the distance sensor readings."""
-        pass
+        status = self.pluto_pico.em_btn.get_state(False)
+        self.tE_status_info.setText(status)
         #distance = self.pluto_pico.get_distance_sensor()
         #self.tE_prox_sensor_2_distance.setText(distance + " mm")
 
