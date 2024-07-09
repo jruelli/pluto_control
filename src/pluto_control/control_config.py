@@ -22,8 +22,10 @@ class ControlConfigWindow(QtWidgets.QDialog, control_config_ui.Ui_Dialog):
         self.load_relay_keys()
         self.load_motor_config(1)
         self.load_motor_config(2)
+        self.load_proximity_config()
         self.load_temperature_config()
         self.load_battery_config()
+        self.load_embtn_config()
 
         # Connect the save button
         self.buttonBox.accepted.connect(self.save_key_config)
@@ -69,6 +71,21 @@ class ControlConfigWindow(QtWidgets.QDialog, control_config_ui.Ui_Dialog):
         getattr(self, f'sB_Brake_delay_{motor_number}').setValue(brake_step_delay)
         getattr(self, f'cB_dir_{motor_number}').setCurrentIndex(direction)
 
+    def load_proximity_config(self):
+        """Load the proximity configuration from the configuration file and set it in the UI."""
+        pi.logger.debug("Loading Proximity Configuration")
+        for i in range(4):
+            mode = pi.conf.get('PROXIMITY_CONFIG', f'p{i}_mode', fallback='o')
+            threshold = pi.conf.getint('PROXIMITY_CONFIG', f'p{i}_threshold', fallback=50)
+            # Translate 'o' to 0 (index for "OFF"), 'd' to 1 (index for "Distance"), and 'p' to 2 (index for "Proximity")
+            if mode == 'o':
+                getattr(self, f'cB_mode_p{i}').setCurrentIndex(0)
+            elif mode == 'd':
+                getattr(self, f'cB_mode_p{i}').setCurrentIndex(1)
+            else:
+                getattr(self, f'cB_mode_p{i}').setCurrentIndex(2)
+            getattr(self, f'tE_threshhold_p{i}').setText(str(threshold))
+
     def load_temperature_config(self):
         """Load the temperature configuration from the configuration file and set it in the UI."""
         pi.logger.debug("Loading Temperature Configuration")
@@ -93,6 +110,15 @@ class ControlConfigWindow(QtWidgets.QDialog, control_config_ui.Ui_Dialog):
             else:
                 getattr(self, f'cB_bat_func_{i}').setCurrentIndex(1)
             getattr(self, f'tE_bat_threshold_{i}').setText(str(threshold_temp))
+
+    def load_embtn_config(self):
+        pi.logger.debug("Loading EmBtn Configuration")
+        safety_enabled = pi.conf.get('EM_BTN_CONFIG', f'safety_enabled', fallback='0')
+        # Translate 'e' to 0 (index for "Enabled") and 'd' to 1 (index for "Disabled")
+        if safety_enabled == '1':
+            getattr(self, f'cB_embtn_func').setCurrentIndex(0)
+        else:
+            getattr(self, f'cB_embtn_func').setCurrentIndex(1)
 
     def save_control_keys(self):
         """Save the control keys configuration to the config file."""
@@ -132,6 +158,21 @@ class ControlConfigWindow(QtWidgets.QDialog, control_config_ui.Ui_Dialog):
         pi.conf.set(section, 'brake_step_delay', str(brake_step_delay))
         pi.conf.set(section, 'direction', str(direction))
 
+    def save_proximity_config(self):
+        """Save the proximity configuration to the config file."""
+        for i in range(4):
+            # Translate comboBox index to 'o', 'd', or 'p'
+            mode_index = getattr(self, f'cB_mode_p{i}').currentIndex()
+            if mode_index == 0:
+                mode = 'o'
+            elif mode_index == 1:
+                mode = 'd'
+            else:
+                mode = 'p'
+            threshold = getattr(self, f'tE_threshhold_p{i}').toPlainText()
+            pi.conf.set('PROXIMITY_CONFIG', f'p{i}_mode', mode)
+            pi.conf.set('PROXIMITY_CONFIG', f'p{i}_threshold', threshold)
+
     def save_temperature_config(self):
         """Save the temperature configuration to the config file."""
         for i in range(3):
@@ -156,13 +197,24 @@ class ControlConfigWindow(QtWidgets.QDialog, control_config_ui.Ui_Dialog):
             pi.conf.set('BATTERY_CONFIG', f'b{i}_safety_enabled', safety_enabled)
             pi.conf.set('BATTERY_CONFIG', f'b{i}_threshold_voltage', str(threshold_temp))
 
+    def save_embtn_config(self):
+        """Save the embtn configuration to the config file."""
+        # Translate comboBox index to 'e' or 'd'
+        if getattr(self, f'cB_embtn_func').currentIndex() == 0:
+            safety_enabled = '1'
+        else:
+            safety_enabled = '0'
+        pi.conf.set('EM_BTN_CONFIG', f'cB_embtn_func', safety_enabled)
+
     def save_key_config(self):
         """Save all keys configuration to the config file."""
         self.save_control_keys()
         self.save_relay_keys()
         self.save_motor_config(1)
         self.save_motor_config(2)
+        self.save_proximity_config()
         self.save_temperature_config()
         self.save_battery_config()
+        self.save_embtn_config()
         pi.save_conf()
         pi.logger.debug("Control configuration saved")

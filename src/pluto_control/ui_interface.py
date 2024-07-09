@@ -158,7 +158,6 @@ class Window(QtWidgets.QMainWindow, pluto_control_ui.Ui_MainWindow):
         else:
             self.timer.stop()
             self.timer.timeout.disconnect(self.update_sensor_values)
-            self.pB_ProxySensorConfig.setEnabled(False)
 
     def save_config(self):
         pi.logger.debug("Saving Configuration")
