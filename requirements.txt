@@ -11,3 +11,4 @@ typing_extensions
 mkdocs-table-reader-plugin
 pyserial~=3.5
 pygame
+firebase-admin
