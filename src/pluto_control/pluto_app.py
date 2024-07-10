@@ -29,8 +29,12 @@ class PlutoApp:
             # Add a new document with a specific ID
             doc_ref = self.db.collection(collection_name).document(document_id)
             doc_ref.set(data)
-            self.log_callback(f"Added to {collection_name} with ID {document_id}", "firebase-send")
-            pi.logger.debug(f"Data added successfully to {collection_name} with ID {document_id}!")
+
+            # Retrieve the document to get the address
+            doc = doc_ref.get()
+            if doc.exists:
+                self.log_callback(f"Added to {collection_name} with ID {document_id}", "firebase-send: ")
+                pi.logger.debug(f"Data added successfully to {collection_name} with ID {document_id}!")
         except Exception as e:
             pi.logger.error("Error adding data to Firestore:", e)
 
@@ -71,6 +75,13 @@ class PlutoApp:
                 order_id = change.document.id
                 print(f"New order added: {order_id} - {new_order}")
 
+                # Extract the address field from the new order
+                address = new_order.get('address', 'Address not provided')
+                self.log_callback(f"Address: {address}", "firebase-receive: ")
+
+                # Process the address as needed
+                # Example: You can add additional processing logic here
+
                 # Create a new document in the "plutito" collection with "processing" status
                 plutito_data = {
                     "ordering_state": "processing",
@@ -80,14 +91,12 @@ class PlutoApp:
             elif change.type.name == 'REMOVED':
                 order_id = change.document.id
                 print(f"Order deleted: {order_id}")
-
                 # Optionally, handle the removal from the 'plutito' collection if needed
                 self.remove_data_from_firestore('plutito', order_id)
             elif change.type.name == 'MODIFIED':
                 modified_order = change.document.to_dict()
                 order_id = change.document.id
                 print(f"Order modified: {order_id} - {modified_order}")
-
                 # Handle modifications as needed
                 # For example, update the corresponding document in the 'plutito' collection
                 self.update_data_in_firestore('plutito', order_id, modified_order)
@@ -97,7 +106,7 @@ class PlutoApp:
         try:
             doc_ref = self.db.collection(collection_name).document(document_id)
             doc_ref.delete()
-            self.log_callback(f"Removed from {collection_name} with ID {document_id}", "firebase-send")
+            self.log_callback(f"Removed from {collection_name} with ID {document_id}", "firebase-send: ")
             pi.logger.debug(f"Data removed successfully from {collection_name} with ID {document_id}!")
         except Exception as e:
             pi.logger.error("Error removing data from Firestore:", e)
