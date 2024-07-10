@@ -33,18 +33,24 @@ class Batteries:
 
     def convert_voltage_to_adc(self, cell_voltage, diode_voltage):
         """Convert cell voltage to ADC value using the provided formula."""
-        measured_voltage = ((cell_voltage - diode_voltage) / self.R2) * self.R1
+        measured_voltage = ((float(cell_voltage) - diode_voltage) / self.R2) * self.R1
         return measured_voltage
 
     def get_batteries_b0(self, log_enabled=True):
         command = "ads1115 get-input 0"
-        adc_value = float(self.send_command(command, log_enabled))
+        response = self.send_command(command, log_enabled)
+        # Remove any unwanted prefix like "0: "
+        adc_value_str = response.split(": ")[-1]
+        adc_value = float(adc_value_str)
         self.b0_cell_voltage = self.convert_adc_to_voltage(adc_value, self.DiodeVoltage2)
         return self.b0_cell_voltage
 
     def get_batteries_b1(self, log_enabled=True):
         command = "ads1115 get-input 1"
-        adc_value = float(self.send_command(command, log_enabled))
+        response = self.send_command(command, log_enabled)
+        # Remove any unwanted prefix like "1: "
+        adc_value_str = response.split(": ")[-1]
+        adc_value = float(adc_value_str)
         cell_voltage_b1 = self.convert_adc_to_voltage(adc_value, self.DiodeVoltage2)
         if cell_voltage_b1 == -1 or self.b0_cell_voltage == -1:
             self.b1_cell_voltage = -1
@@ -54,7 +60,10 @@ class Batteries:
 
     def get_batteries_b2(self, log_enabled=True):
         command = "ads1115 get-input 2"
-        adc_value = float(self.send_command(command, log_enabled))
+        response = self.send_command(command, log_enabled)
+        # Remove any unwanted prefix like "2: "
+        adc_value_str = response.split(": ")[-1]
+        adc_value = float(adc_value_str)
         cell_voltage_b2 = self.convert_adc_to_voltage(adc_value, self.DiodeVoltage2)
         if cell_voltage_b2 == -1 or self.b1_cell_voltage == -1:
             self.b2_cell_voltage = -1
@@ -64,7 +73,10 @@ class Batteries:
 
     def get_batteries_b3(self, log_enabled=True):
         command = "ads1115 get-input 3"
-        adc_value = float(self.send_command(command, log_enabled))
+        response = self.send_command(command, log_enabled)
+        # Remove any unwanted prefix like "3: "
+        adc_value_str = response.split(": ")[-1]
+        adc_value = float(adc_value_str)
         cell_voltage_b3 = self.convert_adc_to_voltage(adc_value, self.DiodeVoltage1)
         if cell_voltage_b3 == -1 or self.b2_cell_voltage == -1:
             self.b3_cell_voltage = -1
@@ -77,6 +89,10 @@ class Batteries:
         self.send_command(command)
 
     def config_threshold(self, index, mode, threshold):
+        # Ensure the threshold is limited to 4 digits
+        if len(str(threshold)) > 6:
+            threshold = str(threshold)[:6]  # Truncate to the first 4 digits
+
         command = f"ads1115 config-threshold {index} {mode} {threshold}"
         self.send_command(command)
 
