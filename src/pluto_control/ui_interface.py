@@ -333,10 +333,10 @@ class Window(QtWidgets.QMainWindow, pluto_control_ui.Ui_MainWindow):
         self.tE_prox_sensor_2_distance.setText(distances[2] + " mm")
         self.tE_prox_sensor_3_distance.setText(distances[3] + " mm")
         # ADS1115
-        self.tE_cell_1_voltage.setText( self.pluto_pico.batteries.get_batteries_b0(False) + " V")
-        self.tE_cell_2_voltage.setText( self.pluto_pico.batteries.get_batteries_b1(False) + " V")
-        self.tE_cell_3_voltage.setText( self.pluto_pico.batteries.get_batteries_b2(False) + " V")
-        self.tE_cell_4_voltage.setText( self.pluto_pico.batteries.get_batteries_b3(False) + " V")
+        self.tE_cell_1_voltage.setText(str(self.pluto_pico.batteries.get_batteries_b0(False)) + " V")
+        self.tE_cell_2_voltage.setText(str(self.pluto_pico.batteries.get_batteries_b1(False)) + " V")
+        self.tE_cell_3_voltage.setText(str(self.pluto_pico.batteries.get_batteries_b2(False)) + " V")
+        self.tE_cell_4_voltage.setText(str(self.pluto_pico.batteries.get_batteries_b3(False)) + " V")
 
 
 def create_window():
