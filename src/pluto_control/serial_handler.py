@@ -24,7 +24,7 @@ def remove_prompt(response):
     """
     prompt = "uart:~$"
     if response.endswith(prompt):
-        response = response[:-len(prompt)].strip()
+        response = response[: -len(prompt)].strip()
     return response
 
 
@@ -83,7 +83,7 @@ class SerialHandler:
         if self.serial_connection:
             self.serial_connection.write(message)
             if log_enabled:
-                self.log_callback(message.decode('utf-8').strip(), "send: ")
+                self.log_callback(message.decode("utf-8").strip(), "send: ")
 
     def read_pluto_pico(self, log_enabled=True):
         """
@@ -96,7 +96,7 @@ class SerialHandler:
         response = ""
         if self.serial_connection:
             try:
-                response = self.serial_connection.read_until(b'$').decode('utf-8', 'ignore').strip()
+                response = self.serial_connection.read_until(b"$").decode("utf-8", "ignore").strip()
                 response = self.remove_ansi_escape_sequences(response)
                 response = remove_prompt(response)
                 if log_enabled:
@@ -129,5 +129,5 @@ class SerialHandler:
         Returns:
             str: The cleaned text.
         """
-        ansi_escape_pattern = re.compile(r'(?:\x1B[@-_]|[\x80-\x9F])[0-?]*[ -/]*[@-~]')
-        return ansi_escape_pattern.sub('', text)
+        ansi_escape_pattern = re.compile(r"(?:\x1B[@-_]|[\x80-\x9F])[0-?]*[ -/]*[@-~]")
+        return ansi_escape_pattern.sub("", text)

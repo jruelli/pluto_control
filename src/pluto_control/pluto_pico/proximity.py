@@ -45,8 +45,8 @@ class Proximity:
         return self.send_command(command)
 
     def initialize(self):
-        self.set_mode(self.config['mode'])
-        self.set_threshold(self.config['threshold'])
+        self.set_mode(self.config["mode"])
+        self.set_threshold(self.config["threshold"])
 
 
 class ProximityController:
@@ -64,13 +64,10 @@ class ProximityController:
             self.proximity_sensors.append(proximity_sensor)
 
     def load_proximity_config(self, sensor_number):
-        section = f'PROXIMITY_CONFIG'
-        mode = self.config.get(section, f'p{sensor_number}_mode', fallback='o')
-        threshold = self.config.getint(section, f'p{sensor_number}_threshold', fallback=100)
-        return {
-            'mode': mode,
-            'threshold': threshold
-        }
+        section = f"PROXIMITY_CONFIG"
+        mode = self.config.get(section, f"p{sensor_number}_mode", fallback="o")
+        threshold = self.config.getint(section, f"p{sensor_number}_threshold", fallback=100)
+        return {"mode": mode, "threshold": threshold}
 
     def initialize(self):
         for proximity_sensor in self.proximity_sensors:
@@ -83,4 +80,3 @@ class ProximityController:
             distance = proximity_sensor.get_distance(log_enabled)
             distances.append(distance)
         return distances
-

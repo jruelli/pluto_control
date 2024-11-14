@@ -41,16 +41,15 @@ class PlutoApp:
     # Function to update the status of a delivery option
     def update_delivery_status(self, document_id, new_status):
         try:
-            doc_ref = self.db.collection('plutito').document(document_id)
+            doc_ref = self.db.collection("plutito").document(document_id)
             doc = doc_ref.get()
             if doc.exists:
                 doc_data = doc.to_dict()
                 if doc_data.get("ordering_state") != new_status:
-                    doc_ref.update({
-                        "ordering_state": new_status,
-                        "last_updated": datetime.now()
-                    })
-                    self.log_callback(f"Status updated to '{new_status}' for document ID: {document_id}", "firebase-send")
+                    doc_ref.update({"ordering_state": new_status, "last_updated": datetime.now()})
+                    self.log_callback(
+                        f"Status updated to '{new_status}' for document ID: {document_id}", "firebase-send"
+                    )
                 else:
                     print(f"Document ID {document_id} already has status '{new_status}'")
             else:
@@ -61,7 +60,7 @@ class PlutoApp:
     # Function to subscribe to the "orders" collection
     def subscribe_to_orders(self):
         try:
-            orders_ref = self.db.collection('orders')
+            orders_ref = self.db.collection("orders")
             orders_ref.on_snapshot(self.on_orders_snapshot)
             print("Subscribed to orders collection successfully!")
         except Exception as e:
@@ -70,36 +69,33 @@ class PlutoApp:
     # Callback function for orders collection snapshot
     def on_orders_snapshot(self, col_snapshot, changes, read_time):
         for change in changes:
-            if change.type.name == 'ADDED':
+            if change.type.name == "ADDED":
                 new_order = change.document.to_dict()
                 order_id = change.document.id
                 print(f"New order added: {order_id} - {new_order}")
 
                 # Extract the address field from the new order
-                address = new_order.get('address', 'Address not provided')
+                address = new_order.get("address", "Address not provided")
                 self.log_callback(f"Address: {address}", "firebase-receive: ")
 
                 # Process the address as needed
                 # Example: You can add additional processing logic here
 
                 # Create a new document in the "plutito" collection with "processing" status
-                plutito_data = {
-                    "ordering_state": "processing",
-                    "last_updated": datetime.now()
-                }
-                self.add_data_to_firestore('plutito', order_id, plutito_data)
-            elif change.type.name == 'REMOVED':
+                plutito_data = {"ordering_state": "processing", "last_updated": datetime.now()}
+                self.add_data_to_firestore("plutito", order_id, plutito_data)
+            elif change.type.name == "REMOVED":
                 order_id = change.document.id
                 print(f"Order deleted: {order_id}")
                 # Optionally, handle the removal from the 'plutito' collection if needed
-                self.remove_data_from_firestore('plutito', order_id)
-            elif change.type.name == 'MODIFIED':
+                self.remove_data_from_firestore("plutito", order_id)
+            elif change.type.name == "MODIFIED":
                 modified_order = change.document.to_dict()
                 order_id = change.document.id
                 print(f"Order modified: {order_id} - {modified_order}")
                 # Handle modifications as needed
                 # For example, update the corresponding document in the 'plutito' collection
-                self.update_data_in_firestore('plutito', order_id, modified_order)
+                self.update_data_in_firestore("plutito", order_id, modified_order)
 
     # Function to remove data from Firestore
     def remove_data_from_firestore(self, collection_name, document_id):

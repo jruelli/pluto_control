@@ -30,7 +30,7 @@ class PlutoPico:
 
     def send_command(self, command, log_enabled=True):
         command_with_newline = command + "\n"
-        self.serial_handler.write_pluto_pico(command_with_newline.encode('utf-8'), log_enabled)
+        self.serial_handler.write_pluto_pico(command_with_newline.encode("utf-8"), log_enabled)
         response = self.receive_command(log_enabled)
         return response
 

@@ -29,10 +29,10 @@ class Motor:
         command_direction = f"motor{self.motor_number} get-dir"
         speed = self.send_command(command_speed, log_enabled)
         direction = self.send_command(command_direction, log_enabled)
-        forward_dir = str(self.config['direction'])
+        forward_dir = str(self.config["direction"])
         # set a minus if going backwards, set + if going forward
         if direction != forward_dir:
-            speed = '-' + speed
+            speed = "-" + speed
         return speed
 
     def set_accel_rate(self, value):
@@ -52,11 +52,11 @@ class Motor:
         self.send_command(command)
 
     def initialize(self):
-        self.set_direction(self.config['direction'])
-        self.set_accel_rate(self.config['accel_rate'])
-        self.set_brake_rate(self.config['brake_rate'])
-        self.set_accel_delay(self.config['accel_delay'])
-        self.set_brake_delay(self.config['brake_delay'])
+        self.set_direction(self.config["direction"])
+        self.set_accel_rate(self.config["accel_rate"])
+        self.set_brake_rate(self.config["brake_rate"])
+        self.set_accel_delay(self.config["accel_delay"])
+        self.set_brake_delay(self.config["brake_delay"])
 
 
 class MotorController:
@@ -74,14 +74,14 @@ class MotorController:
             self.motors.append(motor)
 
     def load_motor_config(self, motor_number):
-        section = f'MOTOR_{motor_number}_CONFIG'
+        section = f"MOTOR_{motor_number}_CONFIG"
         return {
-            'direction': self.config.getint(section, 'direction', fallback=0),
-            'max_speed': self.config.getint(section, 'max_speed', fallback=0),
-            'accel_rate': self.config.getint(section, 'accel_step_size', fallback=100),
-            'brake_rate': self.config.getint(section, 'brake_step_size', fallback=100),
-            'accel_delay': self.config.getint(section, 'accel_step_delay', fallback=1),
-            'brake_delay': self.config.getint(section, 'brake_step_delay', fallback=1),
+            "direction": self.config.getint(section, "direction", fallback=0),
+            "max_speed": self.config.getint(section, "max_speed", fallback=0),
+            "accel_rate": self.config.getint(section, "accel_step_size", fallback=100),
+            "brake_rate": self.config.getint(section, "brake_step_size", fallback=100),
+            "accel_delay": self.config.getint(section, "accel_step_delay", fallback=1),
+            "brake_delay": self.config.getint(section, "brake_step_delay", fallback=1),
         }
 
     def set_motors(self, speed_motor1, dir_motor1, speed_motor2, dir_motor2):

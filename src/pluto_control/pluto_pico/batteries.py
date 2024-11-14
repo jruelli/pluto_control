@@ -97,15 +97,23 @@ class Batteries:
         self.send_command(command)
 
     def initialize(self):
-        b0_safety_enabled = self.config.get('BATTERY_CONFIG', 'b0_safety_enabled', fallback='1')
-        b1_safety_enabled = self.config.get('BATTERY_CONFIG', 'b1_safety_enabled', fallback='1')
-        b2_safety_enabled = self.config.get('BATTERY_CONFIG', 'b2_safety_enabled', fallback='1')
-        b3_safety_enabled = self.config.get('BATTERY_CONFIG', 'b3_safety_enabled', fallback='1')
-        b0_threshold_voltage = self.config.get('BATTERY_CONFIG', 'b0_threshold_voltage', fallback='0.8')
-        b1_threshold_voltage = self.config.get('BATTERY_CONFIG', 'b1_threshold_voltage', fallback='0.8')
-        b2_threshold_voltage = self.config.get('BATTERY_CONFIG', 'b2_threshold_voltage', fallback='0.8')
-        b3_threshold_voltage = self.config.get('BATTERY_CONFIG', 'b3_threshold_voltage', fallback='0.8')
-        self.config_threshold(0, b0_safety_enabled, self.convert_voltage_to_adc(b0_threshold_voltage, self.DiodeVoltage2))
-        self.config_threshold(1, b1_safety_enabled, self.convert_voltage_to_adc(b1_threshold_voltage, self.DiodeVoltage2))
-        self.config_threshold(2, b2_safety_enabled, self.convert_voltage_to_adc(b2_threshold_voltage, self.DiodeVoltage2))
-        self.config_threshold(3, b3_safety_enabled, self.convert_voltage_to_adc(b3_threshold_voltage, self.DiodeVoltage1))
+        b0_safety_enabled = self.config.get("BATTERY_CONFIG", "b0_safety_enabled", fallback="1")
+        b1_safety_enabled = self.config.get("BATTERY_CONFIG", "b1_safety_enabled", fallback="1")
+        b2_safety_enabled = self.config.get("BATTERY_CONFIG", "b2_safety_enabled", fallback="1")
+        b3_safety_enabled = self.config.get("BATTERY_CONFIG", "b3_safety_enabled", fallback="1")
+        b0_threshold_voltage = self.config.get("BATTERY_CONFIG", "b0_threshold_voltage", fallback="0.8")
+        b1_threshold_voltage = self.config.get("BATTERY_CONFIG", "b1_threshold_voltage", fallback="0.8")
+        b2_threshold_voltage = self.config.get("BATTERY_CONFIG", "b2_threshold_voltage", fallback="0.8")
+        b3_threshold_voltage = self.config.get("BATTERY_CONFIG", "b3_threshold_voltage", fallback="0.8")
+        self.config_threshold(
+            0, b0_safety_enabled, self.convert_voltage_to_adc(b0_threshold_voltage, self.DiodeVoltage2)
+        )
+        self.config_threshold(
+            1, b1_safety_enabled, self.convert_voltage_to_adc(b1_threshold_voltage, self.DiodeVoltage2)
+        )
+        self.config_threshold(
+            2, b2_safety_enabled, self.convert_voltage_to_adc(b2_threshold_voltage, self.DiodeVoltage2)
+        )
+        self.config_threshold(
+            3, b3_safety_enabled, self.convert_voltage_to_adc(b3_threshold_voltage, self.DiodeVoltage1)
+        )

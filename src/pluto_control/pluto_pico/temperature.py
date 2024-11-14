@@ -52,12 +52,12 @@ class Temperature:
         self.send_command(command)
 
     def initialize(self):
-        self.t0_safety_enabled = self.config.get('TEMP_CONFIG', 't0_safety_enabled', fallback='e')
-        self.t1_safety_enabled = self.config.get('TEMP_CONFIG', 't1_safety_enabled', fallback='e')
-        self.t2_safety_enabled = self.config.get('TEMP_CONFIG', 't2_safety_enabled', fallback='e')
-        self.t0_threshold_temp = self.config.get('TEMP_CONFIG', 't0_threshold_temp', fallback='69')
-        self.t1_threshold_temp = self.config.get('TEMP_CONFIG', 't1_threshold_temp', fallback='69')
-        self.t2_threshold_temp = self.config.get('TEMP_CONFIG', 't2_threshold_temp', fallback='69')
+        self.t0_safety_enabled = self.config.get("TEMP_CONFIG", "t0_safety_enabled", fallback="e")
+        self.t1_safety_enabled = self.config.get("TEMP_CONFIG", "t1_safety_enabled", fallback="e")
+        self.t2_safety_enabled = self.config.get("TEMP_CONFIG", "t2_safety_enabled", fallback="e")
+        self.t0_threshold_temp = self.config.get("TEMP_CONFIG", "t0_threshold_temp", fallback="69")
+        self.t1_threshold_temp = self.config.get("TEMP_CONFIG", "t1_threshold_temp", fallback="69")
+        self.t2_threshold_temp = self.config.get("TEMP_CONFIG", "t2_threshold_temp", fallback="69")
         self.config_mode(0, self.t0_safety_enabled)
         self.config_mode(1, self.t1_safety_enabled)
         self.config_mode(2, self.t2_safety_enabled)

@@ -22,7 +22,8 @@ from . import proginit as pi
 from . import usb_device_manager
 from . import serial_handler
 from pluto_pico import PlutoPico
-#from .pluto_app import PlutoApp  # Import the PlutoApp class
+
+# from .pluto_app import PlutoApp  # Import the PlutoApp class
 
 
 def extract_version_number(version_string):
@@ -81,7 +82,7 @@ class Window(QtWidgets.QMainWindow, pluto_control_ui.Ui_MainWindow):
         self.timer.timeout.connect(self.poll_controller)
 
         # Initialize PlutoApp for Firestore integration
-        #self.pluto_app = PlutoApp("firebase_secret_key.json", self.log_pico_communication)
+        # self.pluto_app = PlutoApp("firebase_secret_key.json", self.log_pico_communication)
 
     def populate_devices(self):
         """Populate the combo box with available USB devices."""
@@ -215,8 +216,8 @@ class Window(QtWidgets.QMainWindow, pluto_control_ui.Ui_MainWindow):
     def order_confirmed_clicked(self):
         pi.logger.debug("Order Confirmed Button clicked")
         # Find the document with "processing" status and update it to "order_confirmed"
-        plutito_ref = self.pluto_app.db.collection('plutito')
-        query = plutito_ref.where('ordering_state', '==', 'processing').limit(1)
+        plutito_ref = self.pluto_app.db.collection("plutito")
+        query = plutito_ref.where("ordering_state", "==", "processing").limit(1)
         results = query.stream()
         for doc in results:
             self.pluto_app.update_delivery_status(doc.id, "Confirmed!")
@@ -227,8 +228,8 @@ class Window(QtWidgets.QMainWindow, pluto_control_ui.Ui_MainWindow):
     def pB_order_dispatched_clicked(self):
         pi.logger.debug("Order Dispatched Button clicked")
         # Find the document with "processing" status and update it to "order_confirmed"
-        plutito_ref = self.pluto_app.db.collection('plutito')
-        query = plutito_ref.where('ordering_state', '==',  'Confirmed!').limit(1)
+        plutito_ref = self.pluto_app.db.collection("plutito")
+        query = plutito_ref.where("ordering_state", "==", "Confirmed!").limit(1)
         results = query.stream()
         for doc in results:
             self.pluto_app.update_delivery_status(doc.id, "Dispatched!")
@@ -239,8 +240,8 @@ class Window(QtWidgets.QMainWindow, pluto_control_ui.Ui_MainWindow):
     def pB_order_cancelled_clicked(self):
         pi.logger.debug("Order Cancelled Button clicked")
         # Find the document with "processing" status and update it to "order_confirmed"
-        plutito_ref = self.pluto_app.db.collection('plutito')
-        query = plutito_ref.where('ordering_state', '==', ['Confirmed!', 'Dispatched!', 'processing']).limit(1)
+        plutito_ref = self.pluto_app.db.collection("plutito")
+        query = plutito_ref.where("ordering_state", "==", ["Confirmed!", "Dispatched!", "processing"]).limit(1)
         results = query.stream()
         for doc in results:
             self.pluto_app.update_delivery_status(doc.id, "Cancelled!")
@@ -253,8 +254,8 @@ class Window(QtWidgets.QMainWindow, pluto_control_ui.Ui_MainWindow):
     def order_delivered_clicked(self):
         pi.logger.debug("Order Delivered Button clicked")
         # Find the document with "processing" status and update it to "order_confirmed"
-        plutito_ref = self.pluto_app.db.collection('plutito')
-        query = plutito_ref.where('ordering_state', '==',  'Dispatched!').limit(1)
+        plutito_ref = self.pluto_app.db.collection("plutito")
+        query = plutito_ref.where("ordering_state", "==", "Dispatched!").limit(1)
         results = query.stream()
         for doc in results:
             self.pluto_app.update_delivery_status(doc.id, "Delivered!")
@@ -265,8 +266,8 @@ class Window(QtWidgets.QMainWindow, pluto_control_ui.Ui_MainWindow):
     def pB_order_finished_clicked(self):
         pi.logger.debug("Order Fininshed Button clicked")
         # Find the document with "processing" status and update it to "order_confirmed"
-        plutito_ref = self.pluto_app.db.collection('plutito')
-        query = plutito_ref.where('ordering_state', '==',  'Delivered!').limit(1)
+        plutito_ref = self.pluto_app.db.collection("plutito")
+        query = plutito_ref.where("ordering_state", "==", "Delivered!").limit(1)
         results = query.stream()
         for doc in results:
             self.pluto_app.update_delivery_status(doc.id, "Finished!")
@@ -299,19 +300,19 @@ class Window(QtWidgets.QMainWindow, pluto_control_ui.Ui_MainWindow):
         if event.type() == QtCore.QEvent.KeyPress:
             if self.pluto_pico.control.get_keyboard_control():
                 key = event.text().upper()
-                if key == self.pluto_pico.control.key_mappings['handbrake']:
+                if key == self.pluto_pico.control.key_mappings["handbrake"]:
                     self.pluto_pico.control.set_handbrake(not self.pluto_pico.control.get_handbrake())
-                elif key == self.pluto_pico.control.key_mappings['forward']:
+                elif key == self.pluto_pico.control.key_mappings["forward"]:
                     self.pluto_pico.control.go_forward()
-                elif key == self.pluto_pico.control.key_mappings['back']:
+                elif key == self.pluto_pico.control.key_mappings["back"]:
                     self.pluto_pico.control.go_back()
-                elif key == self.pluto_pico.control.key_mappings['left']:
+                elif key == self.pluto_pico.control.key_mappings["left"]:
                     self.pluto_pico.control.turn_left()
-                elif key == self.pluto_pico.control.key_mappings['right']:
+                elif key == self.pluto_pico.control.key_mappings["right"]:
                     self.pluto_pico.control.turn_right()
                 else:
                     for i in range(8):
-                        if key == self.pluto_pico.control.key_mappings[f'relay_{i}']:
+                        if key == self.pluto_pico.control.key_mappings[f"relay_{i}"]:
                             self.pluto_pico.relays.toggle_relay(i)
                             break
                 return True

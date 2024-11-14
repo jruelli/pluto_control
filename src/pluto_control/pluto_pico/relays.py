@@ -8,6 +8,7 @@ __license__ = "MIT"
 
 import proginit as pi
 
+
 class RelayController:
     def __init__(self, send_command_func):
         self.send_command = send_command_func
@@ -15,7 +16,7 @@ class RelayController:
 
     def toggle_relay(self, relay_number):
         pi.logger.debug(f"Toggling relay: {relay_number}")
-        self.relay_state ^= (1 << relay_number)
+        self.relay_state ^= 1 << relay_number
         command = f"relays set-relays {self.relay_state}"
         self.send_command(command)
 
