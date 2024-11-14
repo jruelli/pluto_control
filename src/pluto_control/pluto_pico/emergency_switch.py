@@ -24,4 +24,5 @@ class EmBtn:
     def initialize(self):
         # Retrieve the safety enabled value from the configuration
         safety_enabled = self.config.get('EM_BTN_CONFIG', 'safety_enabled', fallback='1')
-        self.config_mode(safety_enabled)
+        #self.config_mode(safety_enabled)
+        self.config_mode('1')

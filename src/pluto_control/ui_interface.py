@@ -22,7 +22,7 @@ from . import proginit as pi
 from . import usb_device_manager
 from . import serial_handler
 from pluto_pico import PlutoPico
-from .pluto_app import PlutoApp  # Import the PlutoApp class
+#from .pluto_app import PlutoApp  # Import the PlutoApp class
 
 
 def extract_version_number(version_string):
@@ -68,6 +68,7 @@ class Window(QtWidgets.QMainWindow, pluto_control_ui.Ui_MainWindow):
         self.populate_devices()
         self.connected_to_pluto_pico = False
         self.timer = QTimer(self)
+        self.initial_reading = True
 
         # Initialize Pygame for controller support
         pygame.init()
@@ -80,7 +81,7 @@ class Window(QtWidgets.QMainWindow, pluto_control_ui.Ui_MainWindow):
         self.timer.timeout.connect(self.poll_controller)
 
         # Initialize PlutoApp for Firestore integration
-        self.pluto_app = PlutoApp("firebase_secret_key.json", self.log_pico_communication)
+        #self.pluto_app = PlutoApp("firebase_secret_key.json", self.log_pico_communication)
 
     def populate_devices(self):
         """Populate the combo box with available USB devices."""
@@ -137,6 +138,8 @@ class Window(QtWidgets.QMainWindow, pluto_control_ui.Ui_MainWindow):
                 self.connected_to_pluto_pico = True
                 self.enable_ui_elements_of_pico()
                 self.pluto_pico.initialize()
+                pi.reload_conf()
+                self.pluto_pico.set_config_file(pi.conf)
             else:
                 self.pB_Connect.setEnabled(True)
                 self.pB_Disconnect.setEnabled(False)
@@ -318,25 +321,27 @@ class Window(QtWidgets.QMainWindow, pluto_control_ui.Ui_MainWindow):
         """Update the distance sensor readings."""
         # EM-BTN
         self.tE_status_info.setText(self.pluto_pico.em_btn.get_state(False))
-        # Temperatures
-        self.tE_temp_sensor_0_temp.setText(self.pluto_pico.temperature.get_temperature_t0(False) + " °C")
-        self.tE_temp_sensor_1_temp.setText(self.pluto_pico.temperature.get_temperature_t1(False) + " °C")
-        self.tE_temp_sensor_2_temp.setText(self.pluto_pico.temperature.get_temperature_t2(False) + " °C")
         # Motors
         motors_speed = self.pluto_pico.control.motors.get_motors_speed_with_direction(False)
         self.tE_motor_1_speed.setText(motors_speed[0] + " %")
         self.tE_motor_2_speed.setText(motors_speed[1] + " %")
-        # Proximity
-        distances = self.pluto_pico.proximity.get_distance_sensor(False)
-        self.tE_prox_sensor_0_distance.setText(distances[0] + " mm")
-        self.tE_prox_sensor_1_distance.setText(distances[1] + " mm")
-        self.tE_prox_sensor_2_distance.setText(distances[2] + " mm")
-        self.tE_prox_sensor_3_distance.setText(distances[3] + " mm")
-        # ADS1115
-        self.tE_cell_1_voltage.setText(str(self.pluto_pico.batteries.get_batteries_b0(False)) + " V")
-        self.tE_cell_2_voltage.setText(str(self.pluto_pico.batteries.get_batteries_b1(False)) + " V")
-        self.tE_cell_3_voltage.setText(str(self.pluto_pico.batteries.get_batteries_b2(False)) + " V")
-        self.tE_cell_4_voltage.setText(str(self.pluto_pico.batteries.get_batteries_b3(False)) + " V")
+        if self.initial_reading:
+            self.initial_reading = False
+            # Temperatures
+            self.tE_temp_sensor_0_temp.setText(self.pluto_pico.temperature.get_temperature_t0(False) + " °C")
+            self.tE_temp_sensor_1_temp.setText(self.pluto_pico.temperature.get_temperature_t1(False) + " °C")
+            self.tE_temp_sensor_2_temp.setText(self.pluto_pico.temperature.get_temperature_t2(False) + " °C")
+            # Proximity
+            distances = self.pluto_pico.proximity.get_distance_sensor(False)
+            self.tE_prox_sensor_0_distance.setText("-1 mm")
+            self.tE_prox_sensor_1_distance.setText("-1 mm")
+            self.tE_prox_sensor_2_distance.setText("-1 mm")
+            self.tE_prox_sensor_3_distance.setText("-1 mm")
+            # ADS1115
+            self.tE_cell_1_voltage.setText(str(self.pluto_pico.batteries.get_batteries_b0(False)) + " V")
+            self.tE_cell_2_voltage.setText(str(self.pluto_pico.batteries.get_batteries_b1(False)) + " V")
+            self.tE_cell_3_voltage.setText(str(self.pluto_pico.batteries.get_batteries_b2(False)) + " V")
+            self.tE_cell_4_voltage.setText(str(self.pluto_pico.batteries.get_batteries_b3(False)) + " V")
 
 
 def create_window():

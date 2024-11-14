@@ -43,3 +43,6 @@ class PlutoPico:
         self.em_btn.initialize()
         self.temperature.initialize()
         self.batteries.initialize()
+
+    def set_config_file(self, config):
+        self.config = config

@@ -204,7 +204,7 @@ class ControlConfigWindow(QtWidgets.QDialog, control_config_ui.Ui_Dialog):
             safety_enabled = '1'
         else:
             safety_enabled = '0'
-        pi.conf.set('EM_BTN_CONFIG', f'cB_embtn_func', safety_enabled)
+        pi.conf.set('EM_BTN_CONFIG', f'safety_enabled', safety_enabled)
 
     def save_key_config(self):
         """Save all keys configuration to the config file."""
