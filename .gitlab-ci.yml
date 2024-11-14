@@ -1,13 +1,5 @@
 image: python:3.12-bullseye
 
-variables:
-  PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
-
-cache:
-  paths:
-    - .cache/pip
-    - venv/
-
 lint:
   stage: build
   script:
