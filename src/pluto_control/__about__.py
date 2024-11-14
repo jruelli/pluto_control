@@ -3,4 +3,4 @@
 __author__ = "Jannis Ruellmann"
 __copyright__ = "Copyright (C) 2024 Jannis Ruellmann"
 __license__ = "MIT"
-__version__ = "0.1.0a1"
+__version__ = "0.6.3"

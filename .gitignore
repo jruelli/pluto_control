@@ -170,3 +170,4 @@ cython_debug/
 /dist/*.exe
 
 /src/pluto_control/pluto_control.conf.bak
+/src/pluto_control/firebase_secret_key.json

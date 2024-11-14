@@ -22,7 +22,8 @@ from . import proginit as pi
 from . import usb_device_manager
 from . import serial_handler
 from pluto_pico import PlutoPico
-from .pluto_app import PlutoApp  # Import the PlutoApp class
+
+# from .pluto_app import PlutoApp  # Import the PlutoApp class
 
 
 def extract_version_number(version_string):
@@ -56,15 +57,19 @@ class Window(QtWidgets.QMainWindow, pluto_control_ui.Ui_MainWindow):
         self.pB_Disconnect.clicked.connect(self.disconnect_serial_connection)
         self.pB_SaveConfig.clicked.connect(self.save_config)
         self.pB_Control_Config.clicked.connect(self.open_control_config_window)
-        self.pB_ProxySensorConfig.clicked.connect(self.open_proxy_config_window)
         self.pB_KeyboardEnable.clicked.connect(self.enable_keyboard_control)
         self.pB_KeyboardDisable.clicked.connect(self.disable_keyboard_control)
         self.pB_ControllerEnable.clicked.connect(self.enable_controller_control)
         self.pB_ControllerDisable.clicked.connect(self.disable_controller_control)
         self.pB_orderConfirmed.clicked.connect(self.order_confirmed_clicked)
+        self.pB_orderDelivered.clicked.connect(self.order_delivered_clicked)
+        self.pB_orderDispatched.clicked.connect(self.pB_order_dispatched_clicked)
+        self.pB_orderCancelled.clicked.connect(self.pB_order_cancelled_clicked)
+        self.pB_orderFinished.clicked.connect(self.pB_order_finished_clicked)
         self.populate_devices()
         self.connected_to_pluto_pico = False
         self.timer = QTimer(self)
+        self.initial_reading = True
 
         # Initialize Pygame for controller support
         pygame.init()
@@ -77,7 +82,8 @@ class Window(QtWidgets.QMainWindow, pluto_control_ui.Ui_MainWindow):
         self.timer.timeout.connect(self.poll_controller)
 
         # Initialize PlutoApp for Firestore integration
-        self.pluto_app = PlutoApp("firebase_secret_key.json", self.log_pico_communication)
+        # self.pluto_app = PlutoApp("firebase_secret_key.json", self.log_pico_communication)
+
     def populate_devices(self):
         """Populate the combo box with available USB devices."""
         self.cB_PortNumber.clear()
@@ -125,14 +131,16 @@ class Window(QtWidgets.QMainWindow, pluto_control_ui.Ui_MainWindow):
                 self.pB_Connect.setEnabled(False)
                 self.pB_Disconnect.setEnabled(True)
                 time.sleep(1)
-                self.serial_handler.write(b"shell echo off\n")
+                self.serial_handler.write_pluto_pico(b"shell echo off\n")
                 self.serial_handler.flush_echoed_command()
-                self.serial_handler.write(b"version\n")
-                response = self.serial_handler.read()
+                self.serial_handler.write_pluto_pico(b"version\n")
+                response = self.serial_handler.read_pluto_pico()
                 self.tE_pluto_pico_version.setText(response)
                 self.connected_to_pluto_pico = True
                 self.enable_ui_elements_of_pico()
                 self.pluto_pico.initialize()
+                pi.reload_conf()
+                self.pluto_pico.set_config_file(pi.conf)
             else:
                 self.pB_Connect.setEnabled(True)
                 self.pB_Disconnect.setEnabled(False)
@@ -144,23 +152,16 @@ class Window(QtWidgets.QMainWindow, pluto_control_ui.Ui_MainWindow):
         """Open the additional configuration window."""
         self.control_config_window.show()
 
-    def open_proxy_config_window(self):
-        self.proxy_config_window.show()
-
     def enable_ui_elements_of_pico(self):
         pi.logger.debug("Enabling other UI elements")
         if self.connected_to_pluto_pico:
-            self.pB_Control_Config.setEnabled(True)
             self.pB_KeyboardEnable.setEnabled(True)
             self.pB_ControllerEnable.setEnabled(True)
-            self.pB_ProxySensorConfig.setEnabled(True)
-            self.timer.timeout.connect(self.update_distance_sensor)
-            self.timer.start(3000)  # Call update_distance_sensor every 500 ms
+            self.timer.timeout.connect(self.update_sensor_values)
+            self.timer.start(3000)
         else:
             self.timer.stop()
-            self.timer.timeout.disconnect(self.update_distance_sensor())
-            self.pB_Control_Config.setEnabled(False)
-            self.pB_ProxySensorConfig.setEnabled(False)
+            self.timer.timeout.disconnect(self.update_sensor_values)
 
     def save_config(self):
         pi.logger.debug("Saving Configuration")
@@ -169,14 +170,7 @@ class Window(QtWidgets.QMainWindow, pluto_control_ui.Ui_MainWindow):
 
     def log_pico_communication(self, message, direction):
         """Add a message to the terminal text edit and log it with direction."""
-        direction_map = {
-            "send": "Sent: ",
-            "received": "Received: ",
-            "firebase-send": "Firebase Sent: ",
-            "firebase-received": "Firebase Received: "
-        }
-        prefix = direction_map.get(direction, "Unknown Direction: ")
-        full_message = f"{prefix}{message}"
+        full_message = f"{direction}{message}"
         self.tE_terminal.append(full_message)
         pi.logger.debug(full_message)
 
@@ -222,8 +216,8 @@ class Window(QtWidgets.QMainWindow, pluto_control_ui.Ui_MainWindow):
     def order_confirmed_clicked(self):
         pi.logger.debug("Order Confirmed Button clicked")
         # Find the document with "processing" status and update it to "order_confirmed"
-        plutito_ref = self.pluto_app.db.collection('plutito')
-        query = plutito_ref.where('ordering_state', '==', 'processing').limit(1)
+        plutito_ref = self.pluto_app.db.collection("plutito")
+        query = plutito_ref.where("ordering_state", "==", "processing").limit(1)
         results = query.stream()
         for doc in results:
             self.pluto_app.update_delivery_status(doc.id, "Confirmed!")
@@ -234,8 +228,8 @@ class Window(QtWidgets.QMainWindow, pluto_control_ui.Ui_MainWindow):
     def pB_order_dispatched_clicked(self):
         pi.logger.debug("Order Dispatched Button clicked")
         # Find the document with "processing" status and update it to "order_confirmed"
-        plutito_ref = self.pluto_app.db.collection('plutito')
-        query = plutito_ref.where('ordering_state', '==',  'Confirmed!').limit(1)
+        plutito_ref = self.pluto_app.db.collection("plutito")
+        query = plutito_ref.where("ordering_state", "==", "Confirmed!").limit(1)
         results = query.stream()
         for doc in results:
             self.pluto_app.update_delivery_status(doc.id, "Dispatched!")
@@ -246,8 +240,8 @@ class Window(QtWidgets.QMainWindow, pluto_control_ui.Ui_MainWindow):
     def pB_order_cancelled_clicked(self):
         pi.logger.debug("Order Cancelled Button clicked")
         # Find the document with "processing" status and update it to "order_confirmed"
-        plutito_ref = self.pluto_app.db.collection('plutito')
-        query = plutito_ref.where('ordering_state', '==', ['Confirmed!', 'Dispatched!', 'processing']).limit(1)
+        plutito_ref = self.pluto_app.db.collection("plutito")
+        query = plutito_ref.where("ordering_state", "==", ["Confirmed!", "Dispatched!", "processing"]).limit(1)
         results = query.stream()
         for doc in results:
             self.pluto_app.update_delivery_status(doc.id, "Cancelled!")
@@ -260,8 +254,8 @@ class Window(QtWidgets.QMainWindow, pluto_control_ui.Ui_MainWindow):
     def order_delivered_clicked(self):
         pi.logger.debug("Order Delivered Button clicked")
         # Find the document with "processing" status and update it to "order_confirmed"
-        plutito_ref = self.pluto_app.db.collection('plutito')
-        query = plutito_ref.where('ordering_state', '==',  'Dispatched!').limit(1)
+        plutito_ref = self.pluto_app.db.collection("plutito")
+        query = plutito_ref.where("ordering_state", "==", "Dispatched!").limit(1)
         results = query.stream()
         for doc in results:
             self.pluto_app.update_delivery_status(doc.id, "Delivered!")
@@ -272,16 +266,14 @@ class Window(QtWidgets.QMainWindow, pluto_control_ui.Ui_MainWindow):
     def pB_order_finished_clicked(self):
         pi.logger.debug("Order Fininshed Button clicked")
         # Find the document with "processing" status and update it to "order_confirmed"
-        plutito_ref = self.pluto_app.db.collection('plutito')
-        query = plutito_ref.where('ordering_state', '==',  'Delivered!').limit(1)
+        plutito_ref = self.pluto_app.db.collection("plutito")
+        query = plutito_ref.where("ordering_state", "==", "Delivered!").limit(1)
         results = query.stream()
         for doc in results:
             self.pluto_app.update_delivery_status(doc.id, "Finished!")
         self.pB_orderFinished.setChecked(False)
         self.pB_orderFinished.setEnabled(False)
         self.pB_orderConfirmed.setEnabled(True)
-
-
 
     def poll_controller(self):
         pygame.event.pump()
@@ -308,29 +300,50 @@ class Window(QtWidgets.QMainWindow, pluto_control_ui.Ui_MainWindow):
         if event.type() == QtCore.QEvent.KeyPress:
             if self.pluto_pico.control.get_keyboard_control():
                 key = event.text().upper()
-                if key == self.pluto_pico.control.key_mappings['handbrake']:
+                if key == self.pluto_pico.control.key_mappings["handbrake"]:
                     self.pluto_pico.control.set_handbrake(not self.pluto_pico.control.get_handbrake())
-                elif key == self.pluto_pico.control.key_mappings['forward']:
+                elif key == self.pluto_pico.control.key_mappings["forward"]:
                     self.pluto_pico.control.go_forward()
-                elif key == self.pluto_pico.control.key_mappings['back']:
+                elif key == self.pluto_pico.control.key_mappings["back"]:
                     self.pluto_pico.control.go_back()
-                elif key == self.pluto_pico.control.key_mappings['left']:
+                elif key == self.pluto_pico.control.key_mappings["left"]:
                     self.pluto_pico.control.turn_left()
-                elif key == self.pluto_pico.control.key_mappings['right']:
+                elif key == self.pluto_pico.control.key_mappings["right"]:
                     self.pluto_pico.control.turn_right()
                 else:
                     for i in range(8):
-                        if key == self.pluto_pico.control.key_mappings[f'relay_{i}']:
+                        if key == self.pluto_pico.control.key_mappings[f"relay_{i}"]:
                             self.pluto_pico.relays.toggle_relay(i)
                             break
                 return True
         return super().eventFilter(obj, event)
 
-    def update_distance_sensor(self):
+    def update_sensor_values(self):
         """Update the distance sensor readings."""
-        pass
-        #distance = self.pluto_pico.get_distance_sensor()
-        #self.tE_prox_sensor_2_distance.setText(distance + " mm")
+        # EM-BTN
+        self.tE_status_info.setText(self.pluto_pico.em_btn.get_state(False))
+        # Motors
+        motors_speed = self.pluto_pico.control.motors.get_motors_speed_with_direction(False)
+        self.tE_motor_1_speed.setText(motors_speed[0] + " %")
+        self.tE_motor_2_speed.setText(motors_speed[1] + " %")
+        if self.initial_reading:
+            self.initial_reading = False
+            # Temperatures
+            self.tE_temp_sensor_0_temp.setText(self.pluto_pico.temperature.get_temperature_t0(False) + " °C")
+            self.tE_temp_sensor_1_temp.setText(self.pluto_pico.temperature.get_temperature_t1(False) + " °C")
+            self.tE_temp_sensor_2_temp.setText(self.pluto_pico.temperature.get_temperature_t2(False) + " °C")
+            # Proximity
+            distances = self.pluto_pico.proximity.get_distance_sensor(False)
+            self.tE_prox_sensor_0_distance.setText("-1 mm")
+            self.tE_prox_sensor_1_distance.setText("-1 mm")
+            self.tE_prox_sensor_2_distance.setText("-1 mm")
+            self.tE_prox_sensor_3_distance.setText("-1 mm")
+            # ADS1115
+            self.tE_cell_1_voltage.setText(str(self.pluto_pico.batteries.get_batteries_b0(False)) + " V")
+            self.tE_cell_2_voltage.setText(str(self.pluto_pico.batteries.get_batteries_b1(False)) + " V")
+            self.tE_cell_3_voltage.setText(str(self.pluto_pico.batteries.get_batteries_b2(False)) + " V")
+            self.tE_cell_4_voltage.setText(str(self.pluto_pico.batteries.get_batteries_b3(False)) + " V")
+
 
 def create_window():
     """
